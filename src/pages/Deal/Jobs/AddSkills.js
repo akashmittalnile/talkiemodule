@@ -18,7 +18,7 @@ import JobsHeader from "./components/JobsHeader";
 import JobsSearch from "./components/JobsSearch";
 import { dimensions } from "../../../utility/Mycolors";
 import MyAlert from '../../../component/MyAlert';
-import { requestGetApi, deal_job_profile, requestPostApi, deal_job_work_experience, deal_job_education, deal_job_skills } from "../../../WebApi/Service";
+import { requestGetApi, deal_job_profile, requestPostApi, deal_job_work_experience, deal_job_education, deal_job_skills, deal_job_add_skills } from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
 import Loader from '../../../WebApi/Loader';
 import DateSelector from "./components/DateSelector";
@@ -93,8 +93,11 @@ const AddSkills = (props) => {
     const { responseJson, err } = await requestGetApi(deal_job_skills, '', 'GET', userdetaile.token)
     setLoading(false)
     console.log('getSkills responseJson', responseJson)
+    responseJson.success[0].isAdded = true
+    responseJson.success[1].isAdded = false
+    responseJson.success[2].isAdded = true
+    setAllSkillData(responseJson.success)
     if (responseJson.headers.success == 1) {
-      setAllSkillData(responseJson.success)
     } else {
       setalert_sms(err)
       setMy_Alert(true)
@@ -130,19 +133,14 @@ const AddSkills = (props) => {
     }
     setLoading(true);
     const data = {
-      "candidate_id": userdetaile.userid,
-      "degree": fieldOfStudy,
-      "college": institutionName,
-      "year": 2021,
-      "marks_type": "Percentage",
-      "marks": 85,
-      "from_date": moment(startDate).format('YYYY-MM-DD'),
-      "end_date": moment(endDate).format('YYYY-MM-DD'),
-      "status": isChecked ? 1 : 0
-    };
+      "profile_id" : userdetaile.userid,
+      // "skill_id" : [1,3,5],
+      "skill_id" : allSkillData?.filter(el => el?.isAdded)?.map(el => el?.id),
+      "status": 1
+    }
     console.log("handleAdd data", data);
     const { responseJson, err } = await requestPostApi(
-      deal_job_education,
+      deal_job_add_skills,
       data,
       "POST",
       userdetaile.token
@@ -175,12 +173,15 @@ const AddSkills = (props) => {
           <Search value={searchText} setValue={setSearchText} />
           <View style={styles.skillTextContainer}>
             {allSkillData?.map((el) => {
+              console.log('skill el', el);
               return (
-                <View style={styles.skillTextView}>
-                  <Text style={styles.skillText2}>{el.skill}</Text>
-                  <TouchableOpacity onPress={()=>{deleteSkill(el.id)}} style={{marginLeft: 8}} >
-                    <Image source={require('./assets/images/jobs-cross-icon.png')} />
-                  </TouchableOpacity>
+                <View style={[styles.skillTextView, !el?.isAdded ? {backgroundColor: '#D9E6F2'} : null]}>
+                  <Text style={[styles.skillText2, !el?.isAdded ? {color: '#0D0D26'} : null]}>{el.skill}</Text>
+                  {el?.isAdded ? 
+                    <TouchableOpacity onPress={()=>{deleteSkill(el.id)}} style={{marginLeft: 8}} >
+                      <Image source={require('./assets/images/jobs-cross-icon.png')} />
+                    </TouchableOpacity>
+                  :null}
                 </View>
               );
             })}
