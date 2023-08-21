@@ -400,8 +400,8 @@ const VideoGameHome = (props) => {
           <HomeHeaderRoundBottom height={100} extraStyle={{ paddingtop: 10, paddingBottom: 25 }} paddingHorizontal={15} borderBottomLeftRadius={20} borderBottomRightRadius={20} backgroundColor='#FFC40C'
           press1={() => { props.navigation.goBack() }} img1={require('../../../assets/images/service-header-back-button.png')} img1width={25} img1height={18}
           press2={() => { }} title2={'Startup'} fontWeight={'500'} img2height={20} color={'#fff'}
-          press3={() => { props.navigation.navigate('StartupNotifications') }} img3={require('../../../assets/images/fashion-bell-icon.png')} img3width={25} img3height={22}
-          press4={() => { props.navigation.navigate('StartupProfile') }} img4={require('../../../assets/People/PeopleProfileIConModal.png')} img4width={25} img4height={22}
+          press3={() => { props.navigation.navigate('VideoNotification') }} img3={require('../../../assets/images/fashion-bell-icon.png')} img3width={25} img3height={22}
+          press4={() => { props.navigation.navigate('VideoProfile') }} img4={require('../../../assets/People/PeopleProfileIConModal.png')} img4width={25} img4height={22}
         />
           {/* <ImageBackground
             source={require("../../../assets/images/Gamewallpaper.png")}
