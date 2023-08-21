@@ -18,6 +18,7 @@ import MyAlert from '../../../component/MyAlert';
 import { requestGetApi, deal_job_profile } from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
 import Loader from '../../../WebApi/Loader';
+import moment from "moment";
 
 const skills = [
   {
@@ -94,7 +95,7 @@ const Profile = (props) => {
     const { responseJson, err } = await requestGetApi(deal_job_profile + userdetaile.userid, '', 'GET', userdetaile.token)
     setLoading(false)
     console.log('getProfileData responseJson', responseJson)
-    if (responseJson.headers.success == 1) {
+    if (responseJson.success == 1) {
       setProfileData(responseJson.body)
     } else {
       setalert_sms(err)
@@ -103,7 +104,7 @@ const Profile = (props) => {
   }
 
   const gotoEditProile = () => {
-    props.navigation.navigate('EditProfile')
+    props.navigation.navigate('EditProfile', {profileId: profileData?.id})
   }
 
   const getSkillsMoreThanFive = () => {
@@ -150,7 +151,7 @@ const Profile = (props) => {
                 </TouchableOpacity>
               </View>
             </View>
-            <Text style={styles.name}>Orlando Diggs</Text>
+            <Text style={styles.name}>{profileData?.full_name}</Text>
             <Text style={styles.location}>California, USA</Text>
             <TouchableOpacity onPress={gotoEditProile} style={styles.editProfileButton}>
               <Text style={styles.editProfileText}>Edit profile</Text>
@@ -169,8 +170,7 @@ const Profile = (props) => {
             </View>
             <Divider style={{ marginVertical: 20 }} />
             <Text style={styles.aboutMeLongText}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id
-              commodo egestas metus interdum dolor.
+              {profileData?.about}
             </Text>
           </View>
 
@@ -182,22 +182,26 @@ const Profile = (props) => {
               <Text style={styles.workExpText}>Work experience</Text>
             </View>
             <Divider style={{ marginVertical: 20 }} />
-            <Text style={styles.managerText}>Manager</Text>
-            <Text style={[styles.workExpSmallText, { marginTop: 13 }]}>
-              Amazon Inc
-            </Text>
-            <View style={styles.workExpBottomRow}>
-              <Text style={styles.workExpSmallText}>Jan 2015 - Feb 2022</Text>
-              <View style={styles.dot}></View>
-              <Text
-                style={[
-                  styles.workExpSmallText,
-                  { marginLeft: 5, marginTop: 7 },
-                ]}
-              >
-                5 Years
-              </Text>
-            </View>
+            {profileData?.experience_details?.map(el => 
+              <>
+                <Text style={styles.managerText}>Manager</Text>
+                <Text style={[styles.workExpSmallText, { marginTop: 13 }]}>
+                  {el.company}
+                </Text>
+                <View style={styles.workExpBottomRow}>
+                  <Text style={styles.workExpSmallText}>{moment(el?.from_date).format('MMM YYYY')} - {moment(el?.end_date).format('MMM YYYY')}</Text>
+                  <View style={styles.dot}></View>
+                  <Text
+                    style={[
+                      styles.workExpSmallText,
+                      { marginLeft: 5, marginTop: 7 },
+                    ]}
+                    >
+                    {moment(el?.end_date).diff(moment(el?.from_date), 'years')} Years
+                  </Text>
+                </View>
+              </>
+            )}
           </View>
 
           <View style={styles.eduContainer}>
@@ -208,18 +212,41 @@ const Profile = (props) => {
               <Text style={styles.eduText}>Education</Text>
             </View>
             <Divider style={{ marginVertical: 20 }} />
-            <Text style={styles.managerText}>Information Technology</Text>
-            <Text style={[styles.eduSmallText, { marginTop: 13 }]}>
-              University of Oxford
-            </Text>
-            <View style={styles.eduBottomRow}>
-              <Text style={styles.eduSmallText}>Jan 2015 - Feb 2022</Text>
-              <View style={styles.dot}></View>
-              <Text
-                style={[styles.eduSmallText, { marginLeft: 5, marginTop: 7 }]}
-              >
-                5 Years
+            {Array.isArray(profileData?.education_details) ? 
+              <Text style={styles.managerText}>{profileData?.education_details[0]?.degree}</Text>
+              :
+              <Text style={styles.managerText}>{Array.isArray(profileData?.education_details) ? profileData?.education_details[0]?.degree : ''}</Text>
+            }
+            {Array.isArray(profileData?.education_details) ? 
+              <Text style={[styles.eduSmallText, { marginTop: 13 }]}>
+                {profileData?.education_details[0]?.college}
               </Text>
+              : 
+              <Text style={[styles.eduSmallText, { marginTop: 13 }]}>
+                {''}
+              </Text>
+            }
+            <View style={styles.eduBottomRow}>
+              {/* <Text style={styles.eduSmallText}>Jan 2015 - Feb 2022</Text> */}
+                {Array.isArray(profileData?.education_details) ? 
+                <Text style={styles.eduSmallText}>{moment(profileData?.education_details[0]?.from_date).format('MMM YYYY')} - {moment(profileData?.education_details[0]?.end_date).format('MMM YYYY')}</Text>
+                :
+                <Text style={styles.eduSmallText}>--</Text>
+              }
+              <View style={styles.dot}></View>
+              {Array.isArray(profileData?.education_details) ? 
+                <Text
+                  style={[styles.eduSmallText, { marginLeft: 5, marginTop: 7 }]}
+                >
+                  {moment(profileData?.education_details[0]?.end_date).diff(moment(profileData?.education_details[0]?.from_date), 'years')} Years
+                </Text>
+                :
+                <Text
+                  style={[styles.eduSmallText, { marginLeft: 5, marginTop: 7 }]}
+                >
+                  ''
+                </Text>
+              }
             </View>
           </View>
 

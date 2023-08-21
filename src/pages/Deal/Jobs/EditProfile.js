@@ -113,7 +113,7 @@ const EditProfile = (props) => {
     props.navigation.navigate('AddAppreciaton')
   }
   const gotoAddSkills = () => {
-    props.navigation.navigate('AddSkills')
+    props.navigation.navigate('AddSkills', {profileId: props?.route?.params?.profileId})
   }
 
   return (

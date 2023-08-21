@@ -17,127 +17,116 @@ import {
 import JobsHeader from "./components/JobsHeader";
 import JobsSearch from "./components/JobsSearch";
 import { dimensions } from "../../../utility/Mycolors";
-import MyAlert from '../../../component/MyAlert';
-import { requestGetApi, deal_job_profile, requestPostApi, deal_job_work_experience, deal_job_education, deal_job_skills, deal_job_add_skills } from "../../../WebApi/Service";
+import MyAlert from "../../../component/MyAlert";
+import {
+  requestGetApi,
+  deal_job_profile,
+  requestPostApi,
+  deal_job_work_experience,
+  deal_job_education,
+  deal_job_skills,
+  deal_job_add_skills,
+} from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
-import Loader from '../../../WebApi/Loader';
+import Loader from "../../../WebApi/Loader";
 import DateSelector from "./components/DateSelector";
-import DatePicker from 'react-native-date-picker';
+import DatePicker from "react-native-date-picker";
 import moment from "moment";
+import Toast from 'react-native-toast-message';
 
 const selectedSkills = [
   {
-    id:'1',
-    name: 'Leadership'
+    id: "1",
+    name: "Leadership",
   },
   {
-    id:'2',
-    name: 'Teamwork'
+    id: "2",
+    name: "Teamwork",
   },
   {
-    id:'3',
-    name: 'Visioner'
+    id: "3",
+    name: "Visioner",
   },
   {
-    id:'5',
-    name: 'Consistent'
+    id: "5",
+    name: "Consistent",
   },
-]
+];
 const allSkills = [
   {
-    id:'1',
-    name: 'Leadership'
+    id: "1",
+    name: "Leadership",
   },
   {
-    id:'2',
-    name: 'Teamwork'
+    id: "2",
+    name: "Teamwork",
   },
   {
-    id:'3',
-    name: 'Visioner'
+    id: "3",
+    name: "Visioner",
   },
   {
-    id:'4',
-    name: 'Good communication skills'
+    id: "4",
+    name: "Good communication skills",
   },
   {
-    id:'5',
-    name: 'Consistent'
+    id: "5",
+    name: "Consistent",
   },
-]
+];
 const AddSkills = (props) => {
-  const userdetaile  = useSelector(state => state.user.user_details)
-  const [loading, setLoading] = useState(false)
-  const [My_Alert, setMy_Alert] = useState(false)
-  const [alert_sms, setalert_sms] = useState('')
-  const [educationLevel, setEducationLevel] = useState('')
-  const [institutionName, setInstitutionName] = useState('')
-  const [fieldOfStudy, setFieldOfStudy] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
-  const [isStartDateOpen, setIsStartDateOpen] = useState('')
-  const [isEndDateOpen, setIsEndDateOpen] = useState('')
-  const [description, setDescription] = useState('')
-  const [isChecked, setIsChecked] = useState(true)
-  const [searchText, setSearchText] = useState('')
-  const [allSkillData, setAllSkillData] = useState([])
+  const userdetaile = useSelector((state) => state.user.user_details);
+  const [loading, setLoading] = useState(false);
+  const [My_Alert, setMy_Alert] = useState(false);
+  const [alert_sms, setalert_sms] = useState("");
+  const [educationLevel, setEducationLevel] = useState("");
+  const [institutionName, setInstitutionName] = useState("");
+  const [fieldOfStudy, setFieldOfStudy] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [isStartDateOpen, setIsStartDateOpen] = useState("");
+  const [isEndDateOpen, setIsEndDateOpen] = useState("");
+  const [description, setDescription] = useState("");
+  const [isChecked, setIsChecked] = useState(true);
+  const [searchText, setSearchText] = useState("");
+  const [allSkillData, setAllSkillData] = useState([]);
 
-  const institutionNameRef = useRef()
-  const fieldOfStudyRef = useRef()
+  const institutionNameRef = useRef();
+  const fieldOfStudyRef = useRef();
 
-  useEffect(()=> {
-    getSkills()
-  }, [])
+  useEffect(() => {
+    getSkills();
+  }, []);
   const getSkills = async () => {
-    setLoading(true)
-    const { responseJson, err } = await requestGetApi(deal_job_skills, '', 'GET', userdetaile.token)
-    setLoading(false)
-    console.log('getSkills responseJson', responseJson)
-    responseJson.success[0].isAdded = true
-    responseJson.success[1].isAdded = false
-    responseJson.success[2].isAdded = true
-    setAllSkillData(responseJson.success)
-    if (responseJson.headers.success == 1) {
+    setLoading(true);
+    const { responseJson, err } = await requestGetApi(
+      deal_job_skills,
+      "",
+      "GET",
+      userdetaile.token
+    );
+    setLoading(false);
+    console.log("getSkills responseJson", responseJson);
+    // responseJson.success[0].isAdded = true
+    // responseJson.success[1].isAdded = false
+    // responseJson.success[2].isAdded = true
+    if (responseJson.success == 1) {
+      console.log("here");
+      setAllSkillData(responseJson.data);
     } else {
-      setalert_sms(err)
-      setMy_Alert(true)
+      setalert_sms(err);
+      setMy_Alert(true);
     }
-  }
-  // Saurabh Saneja August 16, 2023 validate fields before calling api
-  const validation = () => {
-    if (educationLevel?.trim()?.length === 0) {
-      Toast.show({ text1: "Please enter Job Title" });
-      return false;
-    } else if (institutionName?.trim()?.length === 0) {
-      Toast.show({ text1: "Please enter Company" });
-      return false; 
-    } else if (fieldOfStudy?.trim()?.length === 0) {
-      Toast.show({ text1: "Please enter Field of study" });
-      return false;
-    } else if (startDate === '') {
-      Toast.show({ text1: "Please select Start Date" });
-      return false;
-    } else if (endDate === '') {
-      Toast.show({ text1: "Please select End Date" });
-      return false;
-    } else if (description?.trim()?.length === 0) {
-      Toast.show({ text1: "Please enter description" });
-      return false;
-    }
-    return true;
   };
   // Saurabh Saneja August 16, 2023 send work experience data to backend
   const handleAdd = async () => {
-    if (!validation()) {
-      return;
-    }
     setLoading(true);
     const data = {
-      "profile_id" : userdetaile.userid,
+      profile_id: props?.route?.params?.profileId,
       // "skill_id" : [1,3,5],
-      "skill_id" : allSkillData?.filter(el => el?.isAdded)?.map(el => el?.id),
-      "status": 1
-    }
+      skill_id: allSkillData?.filter((el) => el?.isAdded)?.map((el) => el?.id),
+      status: 1,
+    };
     console.log("handleAdd data", data);
     const { responseJson, err } = await requestPostApi(
       deal_job_add_skills,
@@ -149,7 +138,7 @@ const AddSkills = (props) => {
     console.log("handleAdd responseJson", responseJson);
     if (responseJson.headers.success == 1) {
       Toast.show({ text1: responseJson.headers.message });
-      props.navigation.goBack()
+      props.navigation.goBack();
     } else {
       Toast.show({ text1: responseJson.headers.message });
       setalert_sms(err);
@@ -157,47 +146,92 @@ const AddSkills = (props) => {
     }
   };
   const deleteSkill = (id) => {
-    const updatedData = allSkillData?.map(el => el.id === id ? ({...el, isAdded: false}) : el)
-    setAllSkillData([...updatedData])
-  }
+    const updatedData = allSkillData?.map((el) =>
+      el.id === id ? { ...el, isAdded: false } : el
+    );
+    setAllSkillData([...updatedData]);
+    Toast.show({ text1: `Skill deleted successfully` });
+  };
   const handleAddSkill = (id) => {
-    const updatedData = allSkillData?.map(el => el.id === id ? ({...el, isAdded: true}) : el)
-    setAllSkillData([...updatedData])
-  }
+    const updatedData = allSkillData?.map((el) =>
+      el.id === id ? { ...el, isAdded: true } : el
+    );
+    setAllSkillData([...updatedData]);
+    Toast.show({ text1: `Skill added successfully` });
+  };
   const SelectedSkills = () => {
-    return (
-      allSkillData?.filter(el => el?.isAdded)?.map((el) => {
-        // console.log('skill el', el);
-        return (
-          <View style={[styles.skillTextView, !el?.isAdded ? {backgroundColor: '#D9E6F2'} : null]}>
-            <Text style={[styles.skillText2, !el?.isAdded ? {color: '#0D0D26'} : null]}>{el.skill}</Text>
-            {el?.isAdded ? 
-              <TouchableOpacity onPress={()=>{deleteSkill(el.id)}} style={{marginLeft: 8}} >
-                <Image source={require('./assets/images/jobs-cross-icon.png')} />
-              </TouchableOpacity>
-            :null}
-          </View>
-        );
-      })
-    )
-  }
+    const data = allSkillData?.filter((el) => el?.isAdded);
+    return data?.map((el) => {
+      // console.log('skill el', el);
+      return (
+        <View
+          style={[
+            styles.skillTextView,
+            !el?.isAdded ? { backgroundColor: "#D9E6F2" } : null,
+          ]}
+        >
+          <Text
+            style={[
+              styles.skillText2,
+              !el?.isAdded ? { color: "#0D0D26" } : null,
+            ]}
+          >
+            {el.skill}
+          </Text>
+          {el?.isAdded ? (
+            <TouchableOpacity
+              onPress={() => {
+                deleteSkill(el.id);
+              }}
+              style={{ marginLeft: 8 }}
+            >
+              <Image source={require("./assets/images/jobs-cross-icon.png")} />
+            </TouchableOpacity>
+          ) : null}
+        </View>
+      );
+    });
+  };
   const UnselectedSkills = () => {
-    return (
-      allSkillData?.filter(el => !el?.isAdded)?.map((el) => {
-        // console.log('skill el', el);
-        return (
-          <TouchableOpacity onPress={()=>{handleAddSkill(el.id)}} style={[styles.skillTextView, !el?.isAdded ? {backgroundColor: '#D9E6F2'} : null]}>
-            <Text style={[styles.skillText2, !el?.isAdded ? {color: '#0D0D26'} : null]}>{el.skill}</Text>
-            {el?.isAdded ? 
-              <View style={{marginLeft: 8}} >
-                <Image source={require('./assets/images/jobs-cross-icon.png')} />
-              </View>
-            :null}
-          </TouchableOpacity>
-        );
-      })
-    )
-  }
+    // Saurabh Saneja 21 August 2023
+    // filter data to include unselected skills, then filter for search text
+    const data = allSkillData
+      ?.filter((el) => !el?.isAdded)
+      ?.filter((el) =>
+        el?.skill
+          ?.trim()
+          ?.toLowerCase()
+          ?.includes(searchText?.trim()?.toLowerCase())
+      );
+    return data?.map((el) => {
+      // console.log('skill el', el);
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            handleAddSkill(el.id);
+          }}
+          style={[
+            styles.skillTextView,
+            !el?.isAdded ? { backgroundColor: "#D9E6F2" } : null,
+          ]}
+        >
+          <Text
+            style={[
+              styles.skillText2,
+              !el?.isAdded ? { color: "#0D0D26" } : null,
+            ]}
+          >
+            {el.skill}
+          </Text>
+          {el?.isAdded ? (
+            <View style={{ marginLeft: 8 }}>
+              <Image source={require("./assets/images/jobs-cross-icon.png")} />
+            </View>
+          ) : null}
+        </TouchableOpacity>
+      );
+    });
+  };
   return (
     <SafeAreaView style={styles.safeView}>
       <ScrollView
@@ -211,23 +245,45 @@ const AddSkills = (props) => {
 
           <Search value={searchText} setValue={setSearchText} />
           <View style={styles.skillTextContainer}>
-            {searchText?.length === 0 ?
-              allSkillData?.filter(el => el?.isAdded)?.length > 0 ?
-                <SelectedSkills/>
-                :
-                <Text>No selected skills found</Text>  
-              :
-              allSkillData?.filter(el => !el?.isAdded)?.length > 0 ?
-                <UnselectedSkills/>
-                :
-              <Text>No unselected skills found</Text>  
-            }
-          </View>  
-          <MyButton text="SAVE" onPress={handleAdd} style={{ backgroundColor:'#0089CF', paddingVertical: 20, marginTop: 40 }} />
+            {searchText?.length === 0 ? (
+              allSkillData?.filter((el) => el?.isAdded)?.length > 0 ? (
+                <SelectedSkills />
+              ) : (
+                <Text>No selected skills found</Text>
+              )
+            ) : allSkillData
+                ?.filter((el) => !el?.isAdded)
+                ?.filter((el) =>
+                  el?.skill
+                    ?.trim()
+                    ?.toLowerCase()
+                    ?.includes(searchText?.trim()?.toLowerCase())
+                )?.length > 0 ? (
+              <UnselectedSkills />
+            ) : (
+              <Text>No unselected skills match search text</Text>
+            )}
+          </View>
+          <MyButton
+            text="SAVE"
+            onPress={handleAdd}
+            style={{
+              backgroundColor: "#0089CF",
+              paddingVertical: 20,
+              marginTop: 40,
+            }}
+          />
         </View>
       </ScrollView>
       {loading ? <Loader /> : null}
-      {My_Alert ? <MyAlert sms={alert_sms} okPress={() => { setMy_Alert(false) }} /> : null}
+      {My_Alert ? (
+        <MyAlert
+          sms={alert_sms}
+          okPress={() => {
+            setMy_Alert(false);
+          }}
+        />
+      ) : null}
     </SafeAreaView>
   );
 };
@@ -241,20 +297,20 @@ const MyButton = ({ text, onPress, style = {} }) => {
   );
 };
 
-const Search = ({value, setValue}) => {
+const Search = ({ value, setValue }) => {
   return (
     <View style={styles.searchView}>
-      <Image source={require('./assets/images/jobs-search-icon.png')} />
+      <Image source={require("./assets/images/jobs-search-icon.png")} />
       <TextInput
         value={value}
-        onChangeText={(e)=>setValue(e)}
+        onChangeText={(e) => setValue(e)}
         placeholder="Search skills"
-        placeholderTextColor='#95969D'
+        placeholderTextColor="#95969D"
         style={styles.inputStyle}
       />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   safeView: {
@@ -269,12 +325,12 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 0,
   },
-  title:{
-    color:'#150B3D',
+  title: {
+    color: "#150B3D",
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
     marginTop: 18,
-    marginBottom: 3
+    marginBottom: 3,
   },
   button: {
     backgroundColor: "#FFC40C",
@@ -283,11 +339,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: 'black',
+    shadowColor: "black",
     shadowOffset: {
-    width:0,
-    height:3
-    }, 
+      width: 0,
+      height: 3,
+    },
     shadowRadius: 5,
     shadowOpacity: 0.1,
     elevation: 1,
@@ -297,15 +353,15 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "500",
   },
-  searchView:{
-    flexDirection:'row',
-    alignItems:'center',
-    backgroundColor:'white',
-    paddingHorizontal:14,
+  searchView: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    paddingHorizontal: 14,
     height: 48,
     borderRadius: 10,
     marginTop: 19,
-    marginBottom: 27
+    marginBottom: 27,
   },
   inputStyle: {
     backgroundColor: "white",
@@ -313,7 +369,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#95969D",
     width: "80%",
-    marginLeft:13,
+    marginLeft: 13,
   },
   skillTextContainer: {
     flexDirection: "row",
@@ -326,7 +382,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 97,
-    flexDirection:'row',
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 10,
