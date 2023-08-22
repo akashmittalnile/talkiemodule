@@ -106,11 +106,19 @@ const EditProfile = (props) => {
       { id: languages?.length, name: languages.length - 5 },
     ];
   };
-  const gotoAddWorkExp = () => {
-    props.navigation.navigate("AddWorkExp");
+  const gotoAddWorkExp = (type = "add", data) => {
+    if (type === "add") {
+      props.navigation.navigate("AddWorkExp", { actionType: type });
+    } else {
+      props.navigation.navigate("AddWorkExp", { actionType: type, data });
+    }
   };
-  const gotoAddWorkEducation = () => {
-    props.navigation.navigate("AddEducation");
+  const gotoAddWorkEducation = (type = "add", data) => {
+    if (type === "add") {
+      props.navigation.navigate("AddEducation", { actionType: type });
+    } else {
+      props.navigation.navigate("AddEducation", { actionType: type, data });
+    }
   };
   const gotoAddAppreciaton = () => {
     props.navigation.navigate("AddAppreciaton");
@@ -191,7 +199,7 @@ const EditProfile = (props) => {
               </TouchableOpacity>
             </View>
             <Divider style={{ marginVertical: 20 }} />
-            {profileData?.experience_details?.map((el) => (
+            {profileData?.experience_details?.map((item) => (
               <>
                 <View
                   style={{
@@ -201,16 +209,23 @@ const EditProfile = (props) => {
                   }}
                 >
                   <Text style={styles.managerText}>Manager</Text>
-                  <Image
-                    source={require("./assets/images/jobs-icon-edit-profile.png")}
-                  />
+                  <TouchableOpacity
+                    onPress={() => {
+                      gotoAddWorkExp("edit", item);
+                    }}
+                  >
+                    <Image
+                      source={require("./assets/images/jobs-icon-edit-profile.png")}
+                    />
+                  </TouchableOpacity>
                 </View>
                 <Text style={[styles.workExpSmallText, { marginTop: 13 }]}>
-                  Amazon Inc
+                  {item.company}
                 </Text>
                 <View style={styles.workExpBottomRow}>
                   <Text style={styles.workExpSmallText}>
-                    Jan 2015 - Feb 2022
+                    {moment(item?.from_date).format("MMM YYYY")} -{" "}
+                    {moment(item?.end_date).format("MMM YYYY")}
                   </Text>
                   <View style={styles.dot}></View>
                   <Text
@@ -219,7 +234,8 @@ const EditProfile = (props) => {
                       { marginLeft: 5, marginTop: 7 },
                     ]}
                   >
-                    5 Years
+                    {moment(item?.end_date).diff(moment(item?.from_date), "years")}{" "}
+                    Years
                   </Text>
                 </View>
               </>
@@ -254,9 +270,15 @@ const EditProfile = (props) => {
                     }}
                   >
                     <Text style={styles.managerText}>{item?.degree}</Text>
-                    <Image
-                      source={require("./assets/images/jobs-icon-edit-profile.png")}
-                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        gotoAddWorkEducation("edit", item);
+                      }}
+                    >
+                      <Image
+                        source={require("./assets/images/jobs-icon-edit-profile.png")}
+                      />
+                    </TouchableOpacity>
                   </View>
                   <Text style={[styles.eduSmallText, { marginTop: 13 }]}>
                     {item?.college}

@@ -27,14 +27,17 @@ import moment from "moment";
 
 const AddEducation = (props) => {
   const userdetaile  = useSelector(state => state.user.user_details)
+  const [actionType, setActionType] = useState(props?.route?.params?.actionType)
+  const [actionData, setActionData] = useState(props?.route?.params?.data)
+  console.log('actionData',actionData);
   const [loading, setLoading] = useState(false)
   const [My_Alert, setMy_Alert] = useState(false)
   const [alert_sms, setalert_sms] = useState('')
   const [educationLevel, setEducationLevel] = useState('')
-  const [institutionName, setInstitutionName] = useState('')
-  const [fieldOfStudy, setFieldOfStudy] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const [institutionName, setInstitutionName] = useState(actionType === 'add' ? '' : actionData?.college)
+  const [fieldOfStudy, setFieldOfStudy] = useState(actionType === 'add' ? '' : actionData?.degree)
+  const [startDate, setStartDate] = useState(actionType === 'add' ? '' : new Date(actionData?.from_date))
+  const [endDate, setEndDate] = useState(actionType === 'add' ? '' : new Date(actionData?.end_date))
   const [isStartDateOpen, setIsStartDateOpen] = useState('')
   const [isEndDateOpen, setIsEndDateOpen] = useState('')
   const [description, setDescription] = useState('')
