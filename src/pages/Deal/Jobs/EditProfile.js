@@ -94,8 +94,8 @@ const EditProfile = (props) => {
     // Saurabh Saneja August 14, 2023
     // get first 5 skills using slice method, then add remaining number (for example 3) at the end
     return [
-      ...skills?.slice(0, 5),
-      { id: skills?.length, name: skills.length - 5 },
+      ...profileData?.skills?.slice(0, 5),
+      { id: profileData?.skills?.length, name: profileData?.skills.length - 5 },
     ];
   };
   const getLanguagesMoreThanFive = () => {
@@ -307,7 +307,7 @@ const EditProfile = (props) => {
             <View style={{}}>
               {/* Saurabh Saneja August 14, 2023 */}
               {/* only show truncated skills if see more button not pressed */}
-              {skills?.length > 5 && !showMoreSkills ? (
+              {profileData?.skills?.length > 5 && !showMoreSkills ? (
                 <View>
                   <View style={styles.skillTextContainer}>
                     {getSkillsMoreThanFive()?.map((el, index) => {
@@ -323,10 +323,10 @@ const EditProfile = (props) => {
                         >
                           {index === 5 ? (
                             <Text style={styles.skillText2}>
-                              + {el.name} more
+                              + {el.skill} more
                             </Text>
                           ) : (
-                            <Text style={styles.skillText2}>{el.name}</Text>
+                            <Text style={styles.skillText2}>{el.skill}</Text>
                           )}
                         </View>
                       );
@@ -342,10 +342,10 @@ const EditProfile = (props) => {
                 </View>
               ) : (
                 <View style={styles.skillTextContainer}>
-                  {skills?.map((el) => {
+                  {profileData?.skills?.map((el) => {
                     return (
                       <View style={styles.skillTextView}>
-                        <Text style={styles.skillText2}>{el.name}</Text>
+                        <Text style={styles.skillText2}>{el.skill}</Text>
                       </View>
                     );
                   })}
