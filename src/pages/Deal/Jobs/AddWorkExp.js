@@ -27,13 +27,15 @@ import moment from "moment";
 
 const AddWorkExp = (props) => {
   const userdetaile  = useSelector(state => state.user.user_details)
+  const [actionType, setActionType] = useState(props?.route?.params?.actionType)
+  const [actionData, setActionData] = useState(props?.route?.params?.data)
   const [loading, setLoading] = useState(false)
   const [My_Alert, setMy_Alert] = useState(false)
   const [alert_sms, setalert_sms] = useState('')
   const [jobTitle, setJobTitle] = useState('')
-  const [company, setCompany] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const [company, setCompany] = useState(actionType === 'add' ? '' : actionData?.company)
+  const [startDate, setStartDate] = useState(actionType === 'add' ? '' : new Date(actionData?.from_date))
+  const [endDate, setEndDate] = useState(actionType === 'add' ? '' : new Date(actionData?.end_date))
   const [isStartDateOpen, setIsStartDateOpen] = useState('')
   const [isEndDateOpen, setIsEndDateOpen] = useState('')
   const [description, setDescription] = useState('')

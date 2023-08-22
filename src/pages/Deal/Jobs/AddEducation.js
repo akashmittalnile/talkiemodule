@@ -29,7 +29,6 @@ const AddEducation = (props) => {
   const userdetaile  = useSelector(state => state.user.user_details)
   const [actionType, setActionType] = useState(props?.route?.params?.actionType)
   const [actionData, setActionData] = useState(props?.route?.params?.data)
-  console.log('actionData',actionData);
   const [loading, setLoading] = useState(false)
   const [My_Alert, setMy_Alert] = useState(false)
   const [alert_sms, setalert_sms] = useState('')
