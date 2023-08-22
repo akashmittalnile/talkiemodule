@@ -14,10 +14,10 @@ import {
 import JobsHeader from "./components/JobsHeader";
 import JobsSearch from "./components/JobsSearch";
 import { dimensions } from "../../../utility/Mycolors";
-import MyAlert from '../../../component/MyAlert';
+import MyAlert from "../../../component/MyAlert";
 import { requestGetApi, deal_job_profile } from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
-import Loader from '../../../WebApi/Loader';
+import Loader from "../../../WebApi/Loader";
 import moment from "moment";
 
 const skills = [
@@ -77,42 +77,47 @@ const languages = [
   },
 ];
 const Profile = (props) => {
-  const userdetaile  = useSelector(state => state.user.user_details)
+  const userdetaile = useSelector((state) => state.user.user_details);
   const [showMoreSkills, setShowMoreSkills] = useState(false);
   const [showMoreLanguages, setShowMoreLanguages] = useState(false);
-  const [loading, setLoading] = useState(false)
-  const [My_Alert, setMy_Alert] = useState(false)
-  const [alert_sms, setalert_sms] = useState('')
+  const [loading, setLoading] = useState(false);
+  const [My_Alert, setMy_Alert] = useState(false);
+  const [alert_sms, setalert_sms] = useState("");
   const [profileData, setProfileData] = useState({});
 
-  useEffect(()=> {
-    console.log('userdetaile.token', userdetaile);
-    getProfileData()
-  }, [])
+  useEffect(() => {
+    console.log("userdetaile.token", userdetaile);
+    getProfileData();
+  }, []);
   // Saurabh Saneja August 14, 2023 get profile data
   const getProfileData = async () => {
-    setLoading(true)
-    const { responseJson, err } = await requestGetApi(deal_job_profile + userdetaile.userid, '', 'GET', userdetaile.token)
-    setLoading(false)
-    console.log('getProfileData responseJson', responseJson)
+    setLoading(true);
+    const { responseJson, err } = await requestGetApi(
+      deal_job_profile + userdetaile.userid,
+      "",
+      "GET",
+      userdetaile.token
+    );
+    setLoading(false);
+    console.log("getProfileData responseJson", responseJson);
     if (responseJson.success == 1) {
-      setProfileData(responseJson.body)
+      setProfileData(responseJson.body);
     } else {
-      setalert_sms(err)
-      setMy_Alert(true)
+      setalert_sms(err);
+      setMy_Alert(true);
     }
-  }
+  };
 
   const gotoEditProile = () => {
-    props.navigation.navigate('EditProfile', {profileId: profileData?.id})
-  }
+    props.navigation.navigate("EditProfile", { profileData });
+  };
 
   const getSkillsMoreThanFive = () => {
     // Saurabh Saneja August 14, 2023
     // get first 5 skills using slice method, then add remaining number (for example 3) at the end
     return [
-      ...skills?.slice(0, 5),
-      { id: skills?.length, name: skills.length - 5 },
+      ...profileData?.skills?.slice(0, 5),
+      { id: profileData?.skills?.length, name: profileData?.skills.length - 5 },
     ];
   };
   const getLanguagesMoreThanFive = () => {
@@ -153,7 +158,10 @@ const Profile = (props) => {
             </View>
             <Text style={styles.name}>{profileData?.full_name}</Text>
             <Text style={styles.location}>California, USA</Text>
-            <TouchableOpacity onPress={gotoEditProile} style={styles.editProfileButton}>
+            <TouchableOpacity
+              onPress={gotoEditProile}
+              style={styles.editProfileButton}
+            >
               <Text style={styles.editProfileText}>Edit profile</Text>
               <Image
                 source={require("./assets/images/jobs-icon-edit-profile.png")}
@@ -169,9 +177,7 @@ const Profile = (props) => {
               <Text style={styles.aboutMeText}>About me</Text>
             </View>
             <Divider style={{ marginVertical: 20 }} />
-            <Text style={styles.aboutMeLongText}>
-              {profileData?.about}
-            </Text>
+            <Text style={styles.aboutMeLongText}>{profileData?.about}</Text>
           </View>
 
           <View style={styles.workExpContainer}>
@@ -182,26 +188,30 @@ const Profile = (props) => {
               <Text style={styles.workExpText}>Work experience</Text>
             </View>
             <Divider style={{ marginVertical: 20 }} />
-            {profileData?.experience_details?.map(el => 
+            {profileData?.experience_details?.map((el) => (
               <>
                 <Text style={styles.managerText}>Manager</Text>
                 <Text style={[styles.workExpSmallText, { marginTop: 13 }]}>
                   {el.company}
                 </Text>
                 <View style={styles.workExpBottomRow}>
-                  <Text style={styles.workExpSmallText}>{moment(el?.from_date).format('MMM YYYY')} - {moment(el?.end_date).format('MMM YYYY')}</Text>
+                  <Text style={styles.workExpSmallText}>
+                    {moment(el?.from_date).format("MMM YYYY")} -{" "}
+                    {moment(el?.end_date).format("MMM YYYY")}
+                  </Text>
                   <View style={styles.dot}></View>
                   <Text
                     style={[
                       styles.workExpSmallText,
                       { marginLeft: 5, marginTop: 7 },
                     ]}
-                    >
-                    {moment(el?.end_date).diff(moment(el?.from_date), 'years')} Years
+                  >
+                    {moment(el?.end_date).diff(moment(el?.from_date), "years")}{" "}
+                    Years
                   </Text>
                 </View>
               </>
-            )}
+            ))}
           </View>
 
           <View style={styles.eduContainer}>
@@ -212,42 +222,38 @@ const Profile = (props) => {
               <Text style={styles.eduText}>Education</Text>
             </View>
             <Divider style={{ marginVertical: 20 }} />
-            {Array.isArray(profileData?.education_details) ? 
-              <Text style={styles.managerText}>{profileData?.education_details[0]?.degree}</Text>
-              :
-              <Text style={styles.managerText}>{Array.isArray(profileData?.education_details) ? profileData?.education_details[0]?.degree : ''}</Text>
-            }
-            {Array.isArray(profileData?.education_details) ? 
-              <Text style={[styles.eduSmallText, { marginTop: 13 }]}>
-                {profileData?.education_details[0]?.college}
-              </Text>
-              : 
-              <Text style={[styles.eduSmallText, { marginTop: 13 }]}>
-                {''}
-              </Text>
-            }
-            <View style={styles.eduBottomRow}>
-              {/* <Text style={styles.eduSmallText}>Jan 2015 - Feb 2022</Text> */}
-                {Array.isArray(profileData?.education_details) ? 
-                <Text style={styles.eduSmallText}>{moment(profileData?.education_details[0]?.from_date).format('MMM YYYY')} - {moment(profileData?.education_details[0]?.end_date).format('MMM YYYY')}</Text>
-                :
-                <Text style={styles.eduSmallText}>--</Text>
-              }
-              <View style={styles.dot}></View>
-              {Array.isArray(profileData?.education_details) ? 
-                <Text
-                  style={[styles.eduSmallText, { marginLeft: 5, marginTop: 7 }]}
-                >
-                  {moment(profileData?.education_details[0]?.end_date).diff(moment(profileData?.education_details[0]?.from_date), 'years')} Years
-                </Text>
-                :
-                <Text
-                  style={[styles.eduSmallText, { marginLeft: 5, marginTop: 7 }]}
-                >
-                  ''
-                </Text>
-              }
-            </View>
+            {!Array.isArray(profileData?.education_details) ? (
+              <Text style={styles.eduText}> </Text>
+            ) : (
+              profileData?.education_details?.map((item) => (
+                <>
+                  <Text style={styles.managerText}>{item?.degree}</Text>
+                  <Text style={[styles.eduSmallText, { marginTop: 13 }]}>
+                    {item?.college}
+                  </Text>
+                  <View style={styles.eduBottomRow}>
+                    {/* <Text style={styles.eduSmallText}>Jan 2015 - Feb 2022</Text> */}
+                    <Text style={styles.eduSmallText}>
+                      {moment(item?.from_date).format("MMM YYYY")} -{" "}
+                      {moment(item?.end_date).format("MMM YYYY")}
+                    </Text>
+                    <View style={styles.dot}></View>
+                    <Text
+                      style={[
+                        styles.eduSmallText,
+                        { marginLeft: 5, marginTop: 7 },
+                      ]}
+                    >
+                      {moment(item?.end_date).diff(
+                        moment(item?.from_date),
+                        "years"
+                      )}{" "}
+                      Years
+                    </Text>
+                  </View>
+                </>
+              ))
+            )}
           </View>
 
           <View style={styles.skillContainer}>
@@ -259,7 +265,7 @@ const Profile = (props) => {
             <View style={{}}>
               {/* Saurabh Saneja August 14, 2023 */}
               {/* only show truncated skills if see more button not pressed */}
-              {skills?.length > 5 && !showMoreSkills ? (
+              {profileData?.skills?.length > 5 && !showMoreSkills ? (
                 <View>
                   <View style={styles.skillTextContainer}>
                     {getSkillsMoreThanFive()?.map((el, index) => {
@@ -275,10 +281,10 @@ const Profile = (props) => {
                         >
                           {index === 5 ? (
                             <Text style={styles.skillText2}>
-                              + {el.name} more
+                              + {el.skill} more
                             </Text>
                           ) : (
-                            <Text style={styles.skillText2}>{el.name}</Text>
+                            <Text style={styles.skillText2}>{el.skill}</Text>
                           )}
                         </View>
                       );
@@ -294,10 +300,10 @@ const Profile = (props) => {
                 </View>
               ) : (
                 <View style={styles.skillTextContainer}>
-                  {skills?.map((el) => {
+                  {profileData?.skills?.map((el) => {
                     return (
                       <View style={styles.skillTextView}>
-                        <Text style={styles.skillText2}>{el.name}</Text>
+                        <Text style={styles.skillText2}>{el.skill}</Text>
                       </View>
                     );
                   })}
@@ -417,7 +423,14 @@ const Profile = (props) => {
         </View>
       </ScrollView>
       {loading ? <Loader /> : null}
-      {My_Alert ? <MyAlert sms={alert_sms} okPress={() => { setMy_Alert(false) }} /> : null}
+      {My_Alert ? (
+        <MyAlert
+          sms={alert_sms}
+          okPress={() => {
+            setMy_Alert(false);
+          }}
+        />
+      ) : null}
     </SafeAreaView>
   );
 };

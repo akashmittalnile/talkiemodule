@@ -152,7 +152,7 @@ export const requestPostApi = async (endPoint, body, method, token) => {
     console.log("the api responce is", code);
     //  let responseJ = await response.json();
     //  console.log('the api responce is',responseJ.headers)
-    if (code == 200) {
+    if (code == 200 || code == 201) {
       let responseJson = await response.json();
       console.log(responseJson);
       return { responseJson: responseJson, err: null };

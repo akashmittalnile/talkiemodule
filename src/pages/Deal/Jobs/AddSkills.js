@@ -150,14 +150,14 @@ const AddSkills = (props) => {
       el.id === id ? { ...el, isAdded: false } : el
     );
     setAllSkillData([...updatedData]);
-    Toast.show({ text1: `Skill deleted successfully` });
+    Toast.show({ text1: `Skill unselected successfully` });
   };
   const handleAddSkill = (id) => {
     const updatedData = allSkillData?.map((el) =>
       el.id === id ? { ...el, isAdded: true } : el
     );
     setAllSkillData([...updatedData]);
-    Toast.show({ text1: `Skill added successfully` });
+    Toast.show({ text1: `Skill selected successfully` });
   };
   const SelectedSkills = () => {
     const data = allSkillData?.filter((el) => el?.isAdded);

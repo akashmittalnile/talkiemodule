@@ -14,10 +14,11 @@ import {
 import JobsHeader from "./components/JobsHeader";
 import JobsSearch from "./components/JobsSearch";
 import { dimensions } from "../../../utility/Mycolors";
-import MyAlert from '../../../component/MyAlert';
+import MyAlert from "../../../component/MyAlert";
 import { requestGetApi, deal_job_profile } from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
-import Loader from '../../../WebApi/Loader';
+import Loader from "../../../WebApi/Loader";
+import moment from "moment";
 
 const skills = [
   {
@@ -76,16 +77,18 @@ const languages = [
   },
 ];
 const EditProfile = (props) => {
-  const userdetaile  = useSelector(state => state.user.user_details)
+  const userdetaile = useSelector((state) => state.user.user_details);
   const [showMoreSkills, setShowMoreSkills] = useState(false);
+  const [profileData, setProfileData] = useState(
+    props?.route?.params?.profileData
+  );
   const [showMoreLanguages, setShowMoreLanguages] = useState(false);
-  const [loading, setLoading] = useState(false)
-  const [My_Alert, setMy_Alert] = useState(false)
-  const [alert_sms, setalert_sms] = useState('')
-  const [profileData, setProfileData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [My_Alert, setMy_Alert] = useState(false);
+  const [alert_sms, setalert_sms] = useState("");
+  // const [profileData, setProfileData] = useState({});
 
-  useEffect(()=> {
-  }, [])
+  useEffect(() => {}, []);
 
   const getSkillsMoreThanFive = () => {
     // Saurabh Saneja August 14, 2023
@@ -104,17 +107,17 @@ const EditProfile = (props) => {
     ];
   };
   const gotoAddWorkExp = () => {
-    props.navigation.navigate('AddWorkExp')
-  }
+    props.navigation.navigate("AddWorkExp");
+  };
   const gotoAddWorkEducation = () => {
-    props.navigation.navigate('AddEducation')
-  }
+    props.navigation.navigate("AddEducation");
+  };
   const gotoAddAppreciaton = () => {
-    props.navigation.navigate('AddAppreciaton')
-  }
+    props.navigation.navigate("AddAppreciaton");
+  };
   const gotoAddSkills = () => {
-    props.navigation.navigate('AddSkills', {profileId: props?.route?.params?.profileId})
-  }
+    props.navigation.navigate("AddSkills", { profileId: profileData?.id });
+  };
 
   return (
     <SafeAreaView style={styles.safeView}>
@@ -144,7 +147,7 @@ const EditProfile = (props) => {
                 </TouchableOpacity>
               </View>
             </View>
-            <Text style={styles.name}>Orlando Diggs</Text>
+            <Text style={styles.name}>{profileData?.full_name}</Text>
             <Text style={styles.location}>California, USA</Text>
             <TouchableOpacity style={styles.editProfileButton}>
               <Text style={styles.editProfileText}>Edit profile</Text>
@@ -156,63 +159,77 @@ const EditProfile = (props) => {
 
           <View style={styles.aboutMeContainer}>
             <View style={styles.aboutMeTopRow}>
-            <View style={styles.aboutMeTopLeftRow}>
+              <View style={styles.aboutMeTopLeftRow}>
+                <Image
+                  source={require("./assets/images/jobs-icon-about-me.png")}
+                />
+                <Text style={styles.aboutMeText}>About me</Text>
+              </View>
               <Image
-                source={require("./assets/images/jobs-icon-about-me.png")}
-              />
-              <Text style={styles.aboutMeText}>About me</Text>
-            </View>
-            <Image
                 source={require("./assets/images/jobs-icon-edit-profile.png")}
               />
             </View>
             <Divider style={{ marginVertical: 20 }} />
-            <Text style={styles.aboutMeLongText}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus id
-              commodo egestas metus interdum dolor.
-            </Text>
+            <Text style={styles.aboutMeLongText}>{profileData?.about}</Text>
           </View>
 
           <View style={styles.workExpContainer}>
-            <View style={[styles.workExpTopRow, {justifyContent:'space-between'}]}>
+            <View
+              style={[
+                styles.workExpTopRow,
+                { justifyContent: "space-between" },
+              ]}
+            >
               <View style={styles.workExpTopRow}>
                 <Image
                   source={require("./assets/images/jobs-icon-work-experience.png")}
                 />
                 <Text style={styles.workExpText}>Work experience</Text>
               </View>
-              <TouchableOpacity onPress={gotoAddWorkExp} >
-                <Image
-                  source={require("./assets/images/jobs-add-icon.png")}
-                />
+              <TouchableOpacity onPress={gotoAddWorkExp}>
+                <Image source={require("./assets/images/jobs-add-icon.png")} />
               </TouchableOpacity>
             </View>
             <Divider style={{ marginVertical: 20 }} />
-            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}} >
-              <Text style={styles.managerText}>Manager</Text>
-              <Image
-                source={require("./assets/images/jobs-icon-edit-profile.png")}
-              />
-            </View>
-            <Text style={[styles.workExpSmallText, { marginTop: 13 }]}>
-              Amazon Inc
-            </Text>
-            <View style={styles.workExpBottomRow}>
-              <Text style={styles.workExpSmallText}>Jan 2015 - Feb 2022</Text>
-              <View style={styles.dot}></View>
-              <Text
-                style={[
-                  styles.workExpSmallText,
-                  { marginLeft: 5, marginTop: 7 },
-                ]}
-              >
-                5 Years
-              </Text>
-            </View>
+            {profileData?.experience_details?.map((el) => (
+              <>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text style={styles.managerText}>Manager</Text>
+                  <Image
+                    source={require("./assets/images/jobs-icon-edit-profile.png")}
+                  />
+                </View>
+                <Text style={[styles.workExpSmallText, { marginTop: 13 }]}>
+                  Amazon Inc
+                </Text>
+                <View style={styles.workExpBottomRow}>
+                  <Text style={styles.workExpSmallText}>
+                    Jan 2015 - Feb 2022
+                  </Text>
+                  <View style={styles.dot}></View>
+                  <Text
+                    style={[
+                      styles.workExpSmallText,
+                      { marginLeft: 5, marginTop: 7 },
+                    ]}
+                  >
+                    5 Years
+                  </Text>
+                </View>
+              </>
+            ))}
           </View>
 
           <View style={styles.eduContainer}>
-            <View style={[styles.eduTopRow, {justifyContent:'space-between'}]}>
+            <View
+              style={[styles.eduTopRow, { justifyContent: "space-between" }]}
+            >
               <View style={styles.eduTopLeftRow}>
                 <Image
                   source={require("./assets/images/jobs-icon-education.png")}
@@ -220,37 +237,65 @@ const EditProfile = (props) => {
                 <Text style={styles.eduText}>Education</Text>
               </View>
               <TouchableOpacity onPress={gotoAddWorkEducation}>
-                <Image
-                  source={require("./assets/images/jobs-add-icon.png")}
-                />
+                <Image source={require("./assets/images/jobs-add-icon.png")} />
               </TouchableOpacity>
             </View>
             <Divider style={{ marginVertical: 20 }} />
-            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}} >
-              <Text style={styles.managerText}>Information Technology</Text>
-              <Image
-                source={require("./assets/images/jobs-icon-edit-profile.png")}
-              />
-            </View>
-            <Text style={[styles.eduSmallText, { marginTop: 13 }]}>
-              University of Oxford
-            </Text>
-            <View style={styles.eduBottomRow}>
-              <Text style={styles.eduSmallText}>Jan 2015 - Feb 2022</Text>
-              <View style={styles.dot}></View>
-              <Text
-                style={[styles.eduSmallText, { marginLeft: 5, marginTop: 7 }]}
-              >
-                5 Years
-              </Text>
-            </View>
+            {!Array.isArray(profileData?.education_details) ? (
+              <Text style={styles.eduText}> </Text>
+            ) : (
+              profileData?.education_details?.map((item) => (
+                <>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Text style={styles.managerText}>{item?.degree}</Text>
+                    <Image
+                      source={require("./assets/images/jobs-icon-edit-profile.png")}
+                    />
+                  </View>
+                  <Text style={[styles.eduSmallText, { marginTop: 13 }]}>
+                    {item?.college}
+                  </Text>
+                  <View style={styles.eduBottomRow}>
+                    <Text style={styles.eduSmallText}>
+                      {moment(item?.from_date).format("MMM YYYY")} -{" "}
+                      {moment(item?.end_date).format("MMM YYYY")}
+                    </Text>
+                    <View style={styles.dot}></View>
+                    <Text
+                      style={[
+                        styles.eduSmallText,
+                        { marginLeft: 5, marginTop: 7 },
+                      ]}
+                    >
+                      {moment(item?.end_date).diff(
+                        moment(item?.from_date),
+                        "years"
+                      )}{" "}
+                      Years
+                    </Text>
+                  </View>
+                </>
+              ))
+            )}
           </View>
 
           <View style={styles.skillContainer}>
-            <View style={[styles.skillTopRow, {justifyContent:'space-between'}]}>
+            <View
+              style={[styles.skillTopRow, { justifyContent: "space-between" }]}
+            >
               <View style={styles.skillTopLeftRow}>
-                <Image source={require("./assets/images/jobs-icon-skill.png")} />
-                <Text style={[styles.skillText, { marginLeft: 10 }]}>Skill</Text>
+                <Image
+                  source={require("./assets/images/jobs-icon-skill.png")}
+                />
+                <Text style={[styles.skillText, { marginLeft: 10 }]}>
+                  Skill
+                </Text>
               </View>
               <TouchableOpacity onPress={gotoAddSkills}>
                 <Image
@@ -310,7 +355,9 @@ const EditProfile = (props) => {
           </View>
 
           <View style={styles.skillContainer}>
-            <View style={[styles.skillTopRow, {justifyContent:'space-between'}]}>
+            <View
+              style={[styles.skillTopRow, { justifyContent: "space-between" }]}
+            >
               <View style={styles.skillTopLeftRow}>
                 <Image
                   source={require("./assets/images/jobs-icon-language.png")}
@@ -376,21 +423,30 @@ const EditProfile = (props) => {
           </View>
 
           <View style={styles.aprctinContainer}>
-            <View style={[styles.aprctinTopRow, {justifyContent:'space-between'}]}>
+            <View
+              style={[
+                styles.aprctinTopRow,
+                { justifyContent: "space-between" },
+              ]}
+            >
               <View style={styles.aprctinTopLeftRow}>
                 <Image
                   source={require("./assets/images/jobs-icon-appreciation.png")}
                 />
                 <Text style={styles.aprctinText}>Appreciation</Text>
               </View>
-              <TouchableOpacity onPress={gotoAddAppreciaton} >
-                <Image
-                  source={require("./assets/images/jobs-add-icon.png")}
-                />
+              <TouchableOpacity onPress={gotoAddAppreciaton}>
+                <Image source={require("./assets/images/jobs-add-icon.png")} />
               </TouchableOpacity>
             </View>
             <Divider style={{ marginVertical: 20 }} />
-            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}} >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
               <Text style={styles.managerText}>Wireless Symposium (RWS)</Text>
               <Image
                 source={require("./assets/images/jobs-icon-edit-profile.png")}
@@ -405,7 +461,12 @@ const EditProfile = (props) => {
           </View>
 
           <View style={styles.aprctinContainer}>
-            <View style={[styles.aprctinTopRow, {justifyContent:'space-between'}]}>
+            <View
+              style={[
+                styles.aprctinTopRow,
+                { justifyContent: "space-between" },
+              ]}
+            >
               <View style={styles.aprctinTopLeftRow}>
                 <Image
                   source={require("./assets/images/jobs-icon-resume.png")}
@@ -413,9 +474,7 @@ const EditProfile = (props) => {
                 />
                 <Text style={styles.aprctinText}>Resume</Text>
               </View>
-              <Image
-                source={require("./assets/images/jobs-add-icon.png")}
-              />
+              <Image source={require("./assets/images/jobs-add-icon.png")} />
             </View>
             <Divider style={{ marginVertical: 20 }} />
             <View style={styles.resumeBottomRow}>
@@ -442,7 +501,14 @@ const EditProfile = (props) => {
         </View>
       </ScrollView>
       {loading ? <Loader /> : null}
-      {My_Alert ? <MyAlert sms={alert_sms} okPress={() => { setMy_Alert(false) }} /> : null}
+      {My_Alert ? (
+        <MyAlert
+          sms={alert_sms}
+          okPress={() => {
+            setMy_Alert(false);
+          }}
+        />
+      ) : null}
     </SafeAreaView>
   );
 };
@@ -558,12 +624,12 @@ const styles = StyleSheet.create({
   aboutMeTopRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:'space-between'
+    justifyContent: "space-between",
   },
   aboutMeTopLeftRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:'space-between'
+    justifyContent: "space-between",
   },
   aboutMeText: {
     color: "#150B3D",
