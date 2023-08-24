@@ -93,11 +93,11 @@ const AddWorkExp = (props) => {
     console.log("handleAdd data", data);
     setLoading(false);
     console.log("handleAdd responseJson", responseJson);
-    if (responseJson.headers.success == 1) {
-      Toast.show({ text1: responseJson.headers.message });
+    if (responseJson.success == 1) {
+      Toast.show({ text1: responseJson.message });
       props.navigation.goBack()
     } else {
-      Toast.show({ text1: responseJson.headers.message });
+      Toast.show({ text1: responseJson.message });
       setalert_sms(err);
       setMy_Alert(true);
     }
