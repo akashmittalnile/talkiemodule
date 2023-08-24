@@ -37,15 +37,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     // width: "90%",
+    zIndex: 999,
   },
   searchLeftContainer: {
     backgroundColor: "white",
     flexDirection: "row",
     alignItems: "center",
-    width: "75%",
+    width: "80%",
     borderRadius: 10,
     paddingHorizontal: 13,
-    paddingVertical: 8,
+    // paddingVertical: 8,
+    height: 48
   },
   inputStyle: {
     backgroundColor: "white",
@@ -61,6 +63,7 @@ const styles = StyleSheet.create({
     backgroundColor:'white',
     borderRadius:10,
     width: "15%",
-    paddingVertical:15
+    // paddingVertical:15,
+    height: 48
   }
 });

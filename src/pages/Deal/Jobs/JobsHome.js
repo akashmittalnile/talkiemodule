@@ -66,6 +66,9 @@ const JobsHome = (props) => {
   const gotoProfile = () => {
     props.navigation.navigate('Profile')
   }
+  const gotoCompanyProfile = () => {
+    props.navigation.navigate('CompanyProfile')
+  }
 
   const renderFeaturedJob = ({ item }) => {
     return (
@@ -160,7 +163,7 @@ const JobsHome = (props) => {
           alignSelf: 'center',
           marginTop: -25,
           zIndex: 999,
-          elevation: 10
+          // elevation: 10
         }} />
         <View style={styles.mainView2}>
           <View style={styles.findOutContainer}>
@@ -175,7 +178,8 @@ const JobsHome = (props) => {
             </View>
             <Image source={require("./assets/images/job-search.png")} />
           </View>
-          <ViewMore text="Featured Jobs" onPress={gotoProfile} />
+          {/* <ViewMore text="Featured Jobs" onPress={gotoProfile} /> */}
+          <ViewMore text="Featured Jobs" onPress={gotoCompanyProfile} />
           <FlatList
             data={featuredJobsData}
             horizontal={true}
@@ -231,7 +235,7 @@ const styles = StyleSheet.create({
   mainView2: {
     padding: 20,
     paddingTop: 0,
-    marginTop: -30,
+    // marginTop: -30,
   },
   findOutContainer: {
     backgroundColor: "#6D2F92",

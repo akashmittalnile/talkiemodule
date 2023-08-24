@@ -31,16 +31,15 @@ const styles = StyleSheet.create({
         paddingTop:16.6,
         paddingBottom:66.6,
         width:'100%',
-        zIndex: -10,
 
-        shadowColor: '#E0E0E0',
-        shadowOffset: {
-        width:0,
-        height:3
-        }, 
-        shadowRadius: 5,
-        shadowOpacity: 1,
-        elevation: 5,
+        // shadowColor: '#E0E0E0',
+        // shadowOffset: {
+        // width:0,
+        // height:3
+        // }, 
+        // shadowRadius: 5,
+        // shadowOpacity: 1,
+        // elevation: 5,
     },
     headerText:{
         color:'white', 
