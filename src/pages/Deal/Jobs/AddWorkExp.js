@@ -18,12 +18,13 @@ import JobsHeader from "./components/JobsHeader";
 import JobsSearch from "./components/JobsSearch";
 import { dimensions } from "../../../utility/Mycolors";
 import MyAlert from '../../../component/MyAlert';
-import { requestGetApi, deal_job_profile, requestPostApi, deal_job_work_experience } from "../../../WebApi/Service";
+import { requestGetApi, deal_job_profile, requestPostApi, deal_job_work_experience, deal_job_update_experience } from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
 import Loader from '../../../WebApi/Loader';
 import DateSelector from "./components/DateSelector";
 import DatePicker from 'react-native-date-picker';
 import moment from "moment";
+import Toast from 'react-native-toast-message'
 
 const AddWorkExp = (props) => {
   const userdetaile  = useSelector(state => state.user.user_details)
@@ -59,10 +60,11 @@ const AddWorkExp = (props) => {
     } else if (endDate === '') {
       Toast.show({ text1: "Please select End Date" });
       return false;
-    } else if (description?.trim()?.length === 0) {
-      Toast.show({ text1: "Please enter description" });
-      return false;
-    }
+    } 
+    // else if (description?.trim()?.length === 0) {
+    //   Toast.show({ text1: "Please enter description" });
+    //   return false;
+    // }
     return true;
   };
   // Saurabh Saneja August 16, 2023 send work experience data to backend
@@ -72,17 +74,20 @@ const AddWorkExp = (props) => {
     }
     setLoading(true);
     const data = {
-      "candidate_id": userdetaile.userid,
       "company": company,
       "from_date": moment(startDate).format('YYYY-MM-DD'),
       "end_date": moment(endDate).format('YYYY-MM-DD'),
       "title": jobTitle,
       "status": isChecked ? 1 : 0
     };
+    if(actionType === 'add'){
+      data.candidate_id = userdetaile.userid
+    }
+    console.log('update work ex endpoint', deal_job_update_experience + props?.route?.params?.data?.id);
     const { responseJson, err } = await requestPostApi(
-      deal_job_work_experience,
+      actionType === 'add' ? deal_job_work_experience : deal_job_update_experience + props?.route?.params?.data?.id,
       data,
-      "POST",
+      actionType === 'add' ? "POST" : "PUT",
       userdetaile.token
     );
     console.log("handleAdd data", data);

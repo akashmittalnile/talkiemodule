@@ -18,12 +18,13 @@ import JobsHeader from "./components/JobsHeader";
 import JobsSearch from "./components/JobsSearch";
 import { dimensions } from "../../../utility/Mycolors";
 import MyAlert from '../../../component/MyAlert';
-import { requestGetApi, deal_job_profile, requestPostApi, deal_job_work_experience, deal_job_education } from "../../../WebApi/Service";
+import { requestGetApi, deal_job_profile, requestPostApi, deal_job_work_experience, deal_job_education, deal_job_update_education } from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
 import Loader from '../../../WebApi/Loader';
 import DateSelector from "./components/DateSelector";
 import DatePicker from 'react-native-date-picker';
 import moment from "moment";
+import Toast from 'react-native-toast-message'
 
 const AddEducation = (props) => {
   const userdetaile  = useSelector(state => state.user.user_details)
@@ -49,10 +50,11 @@ const AddEducation = (props) => {
   }, [])
   // Saurabh Saneja August 16, 2023 validate fields before calling api
   const validation = () => {
-    if (educationLevel?.trim()?.length === 0) {
-      Toast.show({ text1: "Please enter Job Title" });
-      return false;
-    } else if (institutionName?.trim()?.length === 0) {
+    // if (educationLevel?.trim()?.length === 0) {
+    //   Toast.show({ text1: "Please enter Job Title" });
+    //   return false;
+    // } 
+    if (institutionName?.trim()?.length === 0) {
       Toast.show({ text1: "Please enter Company" });
       return false; 
     } else if (fieldOfStudy?.trim()?.length === 0) {
@@ -64,10 +66,11 @@ const AddEducation = (props) => {
     } else if (endDate === '') {
       Toast.show({ text1: "Please select End Date" });
       return false;
-    } else if (description?.trim()?.length === 0) {
-      Toast.show({ text1: "Please enter description" });
-      return false;
-    }
+    } 
+    // else if (description?.trim()?.length === 0) {
+    //   Toast.show({ text1: "Please enter description" });
+    //   return false;
+    // }
     return true;
   };
   // Saurabh Saneja August 16, 2023 send work experience data to backend
@@ -77,30 +80,32 @@ const AddEducation = (props) => {
     }
     setLoading(true);
     const data = {
-      "candidate_id": userdetaile.userid,
       "degree": fieldOfStudy,
       "college": institutionName,
-      "year": 2021,
-      "marks_type": "Percentage",
-      "marks": 85,
+      // "year": 2021,
+      // "marks_type": "Percentage",
+      // "marks": 85,
       "from_date": moment(startDate).format('YYYY-MM-DD'),
       "end_date": moment(endDate).format('YYYY-MM-DD'),
       "status": isChecked ? 1 : 0
     };
+    if(actionType === 'add'){
+      data.candidate_id = userdetaile.userid
+    }
     console.log("handleAdd data", data);
     const { responseJson, err } = await requestPostApi(
-      deal_job_education,
+      actionType === 'add' ? deal_job_education: deal_job_update_education + props?.route?.params?.data?.id,
       data,
-      "POST",
+      actionType === 'add' ? "POST" : "PUT",
       userdetaile.token
     );
     setLoading(false);
     console.log("handleAdd responseJson", responseJson);
-    if (responseJson.headers.success == 1) {
-      Toast.show({ text1: responseJson.headers.message });
+    if (responseJson.success == 1) {
+      Toast.show({ text1: responseJson.message });
       props.navigation.goBack()
     } else {
-      Toast.show({ text1: responseJson.headers.message });
+      Toast.show({ text1: responseJson.message });
       setalert_sms(err);
       setMy_Alert(true);
     }
