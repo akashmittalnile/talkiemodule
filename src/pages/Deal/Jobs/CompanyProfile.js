@@ -153,6 +153,7 @@ const CompanyHeader = ({goBack}) => {
           <Text style={styles.numEmpText}>146 applicants.</Text>
         </View>
       </View>
+      <Text style={styles.lctnTxt}>Seattle, USA</Text>
     </View>
   )
 }
@@ -216,5 +217,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 11,
     fontFamily: '400'
-  }
+  },
+  lctnTxt:{
+    color: 'white',
+    fontSize: 16,
+    fontFamily: '600',
+    textAlign:'center',
+    marginTop: 8
+  },
 });
