@@ -157,7 +157,7 @@ const AddWorkExp = (props) => {
             </View>
           </TouchableWithoutFeedback>
 
-          <Text style={styles.inputTitle}>Description</Text>      
+          {/* <Text style={styles.inputTitle}>Description</Text>      
           <TextInput
             placeholder={'Write additional information here'}
             placeholderTextColor='#AAA6B9'
@@ -165,7 +165,7 @@ const AddWorkExp = (props) => {
             onChangeText={(e)=>setDescription(e)}
             multiline
             style={styles.descInput}
-          />
+          /> */}
 
           <MyButton text="SAVE" onPress={handleAdd} style={{ backgroundColor:'#0089CF', paddingVertical: 20, marginTop: 40 }} />
         </View>

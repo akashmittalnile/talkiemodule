@@ -116,13 +116,13 @@ const AddEducation = (props) => {
         <View style={styles.mainView2}>
           <Text style={styles.title}>Add Education</Text>
 
-          <Text style={styles.inputTitle}>Level of education</Text>
+          {/* <Text style={styles.inputTitle}>Level of education</Text>
           <MyTextInput
             placeholder='Level of education'
             value={educationLevel}
             setValue={setEducationLevel}
             onSubmitEditing={()=>{institutionNameRef.current.focus()}}
-            />
+            /> */}
           <Text style={styles.inputTitle}>Institution name</Text>
           <MyTextInput
             inputRef={institutionNameRef}
@@ -173,7 +173,7 @@ const AddEducation = (props) => {
             </View>
           </TouchableWithoutFeedback>
 
-          <Text style={styles.inputTitle}>Description</Text>      
+          {/* <Text style={styles.inputTitle}>Description</Text>      
           <TextInput
             placeholder={'Write additional information here'}
             placeholderTextColor='#AAA6B9'
@@ -181,7 +181,7 @@ const AddEducation = (props) => {
             onChangeText={(e)=>setDescription(e)}
             multiline
             style={styles.descInput}
-          />
+          /> */}
 
           <MyButton text="SAVE" onPress={handleAdd} style={{ backgroundColor:'#0089CF', paddingVertical: 20, marginTop: 40 }} />
         </View>
