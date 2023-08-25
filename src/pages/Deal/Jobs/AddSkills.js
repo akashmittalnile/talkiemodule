@@ -26,6 +26,7 @@ import {
   deal_job_education,
   deal_job_skills,
   deal_job_add_skills,
+  deal_job_added_skills,
 } from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
 import Loader from "../../../WebApi/Loader";
@@ -77,6 +78,7 @@ const allSkills = [
 const AddSkills = (props) => {
   const userdetaile = useSelector((state) => state.user.user_details);
   const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
   const [My_Alert, setMy_Alert] = useState(false);
   const [alert_sms, setalert_sms] = useState("");
   const [educationLevel, setEducationLevel] = useState("");
@@ -90,12 +92,14 @@ const AddSkills = (props) => {
   const [isChecked, setIsChecked] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [allSkillData, setAllSkillData] = useState([]);
+  const [addedSkillData, setAddedSkillData] = useState([]);
 
   const institutionNameRef = useRef();
   const fieldOfStudyRef = useRef();
 
   useEffect(() => {
     getSkills();
+    getAddedSkills();
   }, []);
   const getSkills = async () => {
     setLoading(true);
@@ -107,12 +111,27 @@ const AddSkills = (props) => {
     );
     setLoading(false);
     console.log("getSkills responseJson", responseJson);
-    // responseJson.success[0].isAdded = true
-    // responseJson.success[1].isAdded = false
-    // responseJson.success[2].isAdded = true
     if (responseJson.success == 1) {
       console.log("here");
       setAllSkillData(responseJson.data);
+    } else {
+      setalert_sms(err);
+      setMy_Alert(true);
+    }
+  };
+  const getAddedSkills = async () => {
+    setLoading2(true);
+    const { responseJson, err } = await requestGetApi(
+      deal_job_added_skills + props?.route?.params?.profileId,
+      "",
+      "GET",
+      userdetaile.token
+    );
+    setLoading2(false);
+    console.log("getAddedSkills responseJson", responseJson);
+    if (responseJson.success == 1) {
+      console.log("here");
+      setAddedSkillData(responseJson.data?.map(el => ({...el, isAdded: true})));
     } else {
       setalert_sms(err);
       setMy_Alert(true);
@@ -145,23 +164,27 @@ const AddSkills = (props) => {
       setMy_Alert(true);
     }
   };
-  const deleteSkill = (id) => {
+  const handleUnselectSkill = (id) => {
     const updatedData = allSkillData?.map((el) =>
-      el.id === id ? { ...el, isAdded: false } : el
+      el.id === id ? ({ ...el, isAdded: false }) : el
     );
     setAllSkillData([...updatedData]);
+    setAddedSkillData(addedSkillData?.filter(el => el.id !== id))
     Toast.show({ text1: `Skill unselected successfully` });
   };
-  const handleAddSkill = (id) => {
+  const handleSelectSkill = (id) => {
     const updatedData = allSkillData?.map((el) =>
-      el.id === id ? { ...el, isAdded: true } : el
+      el.id === id ? ({ ...el, isAdded: true }) : el
     );
     setAllSkillData([...updatedData]);
+    const thatId = allSkillData.find(el => el.id == id)
+    thatId.isAdded = true
+    setAddedSkillData([...addedSkillData, thatId])
     Toast.show({ text1: `Skill selected successfully` });
   };
   const SelectedSkills = () => {
-    const data = allSkillData?.filter((el) => el?.isAdded);
-    return data?.map((el) => {
+    // const data = addedSkillData?.filter((el) => el?.isAdded);
+    return addedSkillData?.map((el) => {
       // console.log('skill el', el);
       return (
         <View
@@ -181,7 +204,7 @@ const AddSkills = (props) => {
           {el?.isAdded ? (
             <TouchableOpacity
               onPress={() => {
-                deleteSkill(el.id);
+                handleUnselectSkill(el.id);
               }}
               style={{ marginLeft: 8 }}
             >
@@ -195,8 +218,7 @@ const AddSkills = (props) => {
   const UnselectedSkills = () => {
     // Saurabh Saneja 21 August 2023
     // filter data to include unselected skills, then filter for search text
-    const data = allSkillData
-      ?.filter((el) => !el?.isAdded)
+    const data = getUnselectedSkills()
       ?.filter((el) =>
         el?.skill
           ?.trim()
@@ -208,7 +230,7 @@ const AddSkills = (props) => {
       return (
         <TouchableOpacity
           onPress={() => {
-            handleAddSkill(el.id);
+            handleSelectSkill(el.id);
           }}
           style={[
             styles.skillTextView,
@@ -232,6 +254,11 @@ const AddSkills = (props) => {
       );
     });
   };
+  const getUnselectedSkills = () => {
+    const data = allSkillData?.filter(el => !addedSkillData?.find(jl => jl.id === el.id))
+    console.log('getUnselectedSkills', data);
+    return data
+  }
   return (
     <SafeAreaView style={styles.safeView}>
       <ScrollView
@@ -246,13 +273,12 @@ const AddSkills = (props) => {
           <Search value={searchText} setValue={setSearchText} />
           <View style={styles.skillTextContainer}>
             {searchText?.length === 0 ? (
-              allSkillData?.filter((el) => el?.isAdded)?.length > 0 ? (
+              addedSkillData?.filter((el) => el?.isAdded)?.length > 0 ? (
                 <SelectedSkills />
               ) : (
                 <Text>No selected skills found</Text>
               )
-            ) : allSkillData
-                ?.filter((el) => !el?.isAdded)
+            ) : getUnselectedSkills()
                 ?.filter((el) =>
                   el?.skill
                     ?.trim()
@@ -275,7 +301,7 @@ const AddSkills = (props) => {
           />
         </View>
       </ScrollView>
-      {loading ? <Loader /> : null}
+      {loading || loading2 ? <Loader /> : null}
       {My_Alert ? (
         <MyAlert
           sms={alert_sms}

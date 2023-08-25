@@ -178,8 +178,8 @@ const JobsHome = (props) => {
             </View>
             <Image source={require("./assets/images/job-search.png")} />
           </View>
-          {/* <ViewMore text="Featured Jobs" onPress={gotoProfile} /> */}
-          <ViewMore text="Featured Jobs" onPress={gotoCompanyProfile} />
+          <ViewMore text="Featured Jobs" onPress={gotoProfile} />
+          {/* <ViewMore text="Featured Jobs" onPress={gotoCompanyProfile} /> */}
           <FlatList
             data={featuredJobsData}
             horizontal={true}
