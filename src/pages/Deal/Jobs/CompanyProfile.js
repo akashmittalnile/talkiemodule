@@ -296,14 +296,19 @@ const styles = StyleSheet.create({
     marginTop: 18,
     flexDirection:'row',
     alignItems:'center',
-    justifyContent:'center',
+    justifyContent:'space-between',
+    backgroundColor:'white',
+    borderRadius:10,
+    paddingHorizontal: 9,
+    paddingVertical:7
   },
   tabView:{
     paddingVertical: 10,
     backgroundColor:'#0089CF',
     alignItems:'center',
     justifyContent:'center',
-    width: (dimensions.SCREEN_WIDTH -  (24 * 2 + 20)) / 2
+    borderRadius: 5,
+    width: (dimensions.SCREEN_WIDTH -  (24 * 2 + 40)) / 2
   },
   tabTxt:{
     color:'white',
