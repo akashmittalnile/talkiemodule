@@ -167,6 +167,41 @@ const CompanyProfile = (props) => {
               </TouchableOpacity>
             ))}
           </View>
+          {selectedTab === "1" ? (
+            <View>
+              <Text
+                style={[styles.heading, { marginTop: 26, marginBottom: 23 }]}
+              >
+                About Company
+              </Text>
+              <Text style={styles.valueStyle}>
+                Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+                accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
+                quae ab illo inventore veritatis et quasi architecto beatae
+                vitae dicta sunt explicabo.
+              </Text>
+
+              <Text style={styles.heading}>Industry</Text>
+              <Text style={styles.valueStyle}>Internet product</Text>
+
+              <Text style={styles.heading}>Employee size</Text>
+              <Text style={styles.valueStyle}>132,121 Employees</Text>
+
+              <Text style={styles.heading}>Head office</Text>
+              <Text style={styles.valueStyle}>
+                Mountain View, California, Amerika Serikat
+              </Text>
+
+              <Text style={styles.heading}>Type</Text>
+              <Text style={styles.valueStyle}>Multinational company</Text>
+
+              <Text style={styles.heading}>Since</Text>
+              <Text style={styles.valueStyle}>1998</Text>
+
+              <Text style={styles.heading}>Specialization</Text>
+              <Text style={styles.valueStyle}>Search technology, Web computing, Software and Online advertising</Text>
+            </View>
+          ) : null}
         </View>
       </ScrollView>
       {loading ? <Loader /> : null}
@@ -344,6 +379,8 @@ const styles = StyleSheet.create({
     color: "#150B3D",
     fontSize: 14,
     fontWeight: "700",
+    marginTop: 22,
+    marginBottom: 5,
   },
   valueStyle: {
     color: "#524B6B",
