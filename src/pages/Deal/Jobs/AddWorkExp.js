@@ -33,7 +33,7 @@ const AddWorkExp = (props) => {
   const [loading, setLoading] = useState(false)
   const [My_Alert, setMy_Alert] = useState(false)
   const [alert_sms, setalert_sms] = useState('')
-  const [jobTitle, setJobTitle] = useState('')
+  const [jobTitle, setJobTitle] = useState(actionType === 'add' ? '' : actionData?.title)
   const [company, setCompany] = useState(actionType === 'add' ? '' : actionData?.company)
   const [startDate, setStartDate] = useState(actionType === 'add' ? '' : new Date(actionData?.from_date))
   const [endDate, setEndDate] = useState(actionType === 'add' ? '' : new Date(actionData?.end_date))

@@ -190,7 +190,7 @@ const Profile = (props) => {
             <Divider style={{ marginVertical: 20 }} />
             {profileData?.experience_details?.map((el) => (
               <>
-                <Text style={styles.managerText}>Manager</Text>
+                <Text style={styles.managerText}>{el.title}</Text>
                 <Text style={[styles.workExpSmallText, { marginTop: 13 }]}>
                   {el.company}
                 </Text>

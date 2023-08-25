@@ -208,7 +208,7 @@ const EditProfile = (props) => {
                     justifyContent: "space-between",
                   }}
                 >
-                  <Text style={styles.managerText}>Manager</Text>
+                  <Text style={styles.managerText}>{item.title}</Text>
                   <TouchableOpacity
                     onPress={() => {
                       gotoAddWorkExp("edit", item);
