@@ -84,6 +84,17 @@ const CompanyProfile = (props) => {
   const [My_Alert, setMy_Alert] = useState(false);
   const [alert_sms, setalert_sms] = useState("");
   const [profileData, setProfileData] = useState({});
+  const [tabs, setTabs] = useState([
+    {
+      id: '1',
+      name: 'About Us'
+    },
+    {
+      id: '2',
+      name: 'Jobs'
+    },
+  ]);
+  const [selectedTab, setSelectedTab] = useState('1')
 
   useEffect(() => {
     console.log("userdetaile.token", userdetaile);
@@ -107,6 +118,12 @@ const CompanyProfile = (props) => {
       setMy_Alert(true);
     }
   };
+  const changeSelectedTab = (id) => {
+    if(selectedTab === id){
+      return
+    }
+    setSelectedTab(id)
+  }
   return (
     <SafeAreaView style={styles.safeView}>
       <ScrollView
@@ -114,7 +131,21 @@ const CompanyProfile = (props) => {
         style={{ width: "100%" }}
         contentContainerStyle={styles.mainView}
       >
-       <CompanyHeader/> 
+       <CompanyHeader/>
+       <View style={styles.container}>
+        <View style={styles.iconBtnRow}>
+            <IconButton text='Post Jobs' icon={require('./assets/images/jobs-add.png')} onPress={()=>{}} />
+            <IconButton text='Visit website' icon={require('./assets/images/jobs-visit.png')} onPress={()=>{}} style={{marginLeft: 20}} />
+          </View>
+
+        <View style={styles.tabsRow} >
+          {tabs?.map(item => 
+            <TouchableOpacity onPress={()=>changeSelectedTab(item.id)} style={[styles.tabView, selectedTab !== item.id ? {backgroundColor: 'white'}: null]} >
+              <Text style={[styles.tabTxt, selectedTab !== item.id ? {color: 'black'}: null]}>{item.name}</Text>
+            </TouchableOpacity>
+          )}
+        </View>   
+        </View> 
       </ScrollView>
       {loading ? <Loader /> : null}
       {My_Alert ? (
@@ -158,6 +189,15 @@ const CompanyHeader = ({goBack}) => {
   )
 }
 
+const IconButton = ({icon, text, onPress, style = {}}) => {
+  return (
+    <TouchableOpacity onPress={onPress} style={[styles.iconBtn, style]} >
+      <Image source={icon} />
+      <Text style={styles.iconTxt}>{text}</Text>
+    </TouchableOpacity>
+  )
+}
+
 const styles = StyleSheet.create({
   safeView: {
     backgroundColor: "#F8F8F8",
@@ -178,7 +218,9 @@ const styles = StyleSheet.create({
     // height: 100,
     paddingTop: 16.6,
     paddingHorizontal: 20,
-    paddingBottom: 30  
+    paddingBottom: 30,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30  
   },
   hdrTopRow:{
     flexDirection:'row',
@@ -225,4 +267,47 @@ const styles = StyleSheet.create({
     textAlign:'center',
     marginTop: 8
   },
+  iconBtnRow:{
+    // paddingHorizontal: 24,
+    marginTop: 21,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  iconBtn:{
+    backgroundColor:'rgba(0, 137, 207, 0.12)',
+    borderRadius:5,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    paddingVertical: 10,
+    width: (dimensions.SCREEN_WIDTH -  (24 * 2 + 20)) / 2
+  },
+  iconTxt:{
+    color:'#0089CF',
+    fontSize:12,
+    fontWeight:'400',
+    marginLeft: 10
+  },
+  container:{
+    paddingHorizontal: 24
+  },
+  tabsRow:{
+    marginTop: 18,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  tabView:{
+    paddingVertical: 10,
+    backgroundColor:'#0089CF',
+    alignItems:'center',
+    justifyContent:'center',
+    width: (dimensions.SCREEN_WIDTH -  (24 * 2 + 20)) / 2
+  },
+  tabTxt:{
+    color:'white',
+    fontSize: 14,
+    fontWeight: '700'
+  }
 });
