@@ -143,7 +143,7 @@ const AddSkills = (props) => {
     const data = {
       profile_id: props?.route?.params?.profileId,
       // "skill_id" : [1,3,5],
-      skill_id: allSkillData?.filter((el) => el?.isAdded)?.map((el) => el?.id),
+      skill_id: addedSkillData?.map((el) => el?.id),
       status: 1,
     };
     console.log("handleAdd data", data);
