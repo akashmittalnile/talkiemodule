@@ -15,7 +15,11 @@ import JobsHeader from "./components/JobsHeader";
 import JobsSearch from "./components/JobsSearch";
 import { dimensions } from "../../../utility/Mycolors";
 import MyAlert from "../../../component/MyAlert";
-import { requestGetApi, deal_job_profile, deal_job_candidate_homepage } from "../../../WebApi/Service";
+import {
+  requestGetApi,
+  deal_job_profile,
+  deal_job_candidate_homepage,
+} from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
 import Loader from "../../../WebApi/Loader";
 import moment from "moment";
@@ -30,16 +34,16 @@ const SingleJob = (props) => {
   const [profileData, setProfileData] = useState({});
   const [tags, setTags] = useState([
     {
-      id:'1',
-      name: 'IT'
+      id: "1",
+      name: "IT",
     },
     {
-      id:'2',
-      name: 'Full-Time'
+      id: "2",
+      name: "Full-Time",
     },
     {
-      id:'3',
-      name: 'Junior'
+      id: "3",
+      name: "Junior",
     },
   ]);
   const [tabs, setTabs] = useState([
@@ -91,75 +95,39 @@ const SingleJob = (props) => {
       >
         <SingleJobHeader tags={tags} />
         <View style={styles.container}>
-          <View style={styles.iconBtnRow}>
-            <IconButton
-              text="Post Jobs"
-              icon={require("./assets/images/jobs-add.png")}
-              onPress={() => {}}
-            />
-            <IconButton
-              text="Visit website"
-              icon={require("./assets/images/jobs-visit.png")}
-              onPress={() => {}}
-              style={{ marginLeft: 20 }}
-            />
+          <View>
+            <Text style={[styles.heading, { marginTop: 26, marginBottom: 23 }]}>
+              About Company
+            </Text>
+            <Text style={styles.valueStyle}>
+              Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+              accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
+              quae ab illo inventore veritatis et quasi architecto beatae vitae
+              dicta sunt explicabo.
+            </Text>
+
+            <Text style={styles.heading}>Industry</Text>
+            <Text style={styles.valueStyle}>Internet product</Text>
+
+            <Text style={styles.heading}>Employee size</Text>
+            <Text style={styles.valueStyle}>132,121 Employees</Text>
+
+            <Text style={styles.heading}>Head office</Text>
+            <Text style={styles.valueStyle}>
+              Mountain View, California, Amerika Serikat
+            </Text>
+
+            <Text style={styles.heading}>Type</Text>
+            <Text style={styles.valueStyle}>Multinational company</Text>
+
+            <Text style={styles.heading}>Since</Text>
+            <Text style={styles.valueStyle}>1998</Text>
+
+            <Text style={styles.heading}>Specialization</Text>
+            <Text style={styles.valueStyle}>
+              Search technology, Web computing, Software and Online advertising
+            </Text>
           </View>
-
-          <View style={styles.tabsRow}>
-            {tabs?.map((item) => (
-              <TouchableOpacity
-                onPress={() => changeSelectedTab(item.id)}
-                style={[
-                  styles.tabView,
-                  selectedTab !== item.id ? { backgroundColor: "white" } : null,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.tabTxt,
-                    selectedTab !== item.id ? { color: "black" } : null,
-                  ]}
-                >
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          {selectedTab === "1" ? (
-            <View>
-              <Text
-                style={[styles.heading, { marginTop: 26, marginBottom: 23 }]}
-              >
-                About Company
-              </Text>
-              <Text style={styles.valueStyle}>
-                Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
-                quae ab illo inventore veritatis et quasi architecto beatae
-                vitae dicta sunt explicabo.
-              </Text>
-
-              <Text style={styles.heading}>Industry</Text>
-              <Text style={styles.valueStyle}>Internet product</Text>
-
-              <Text style={styles.heading}>Employee size</Text>
-              <Text style={styles.valueStyle}>132,121 Employees</Text>
-
-              <Text style={styles.heading}>Head office</Text>
-              <Text style={styles.valueStyle}>
-                Mountain View, California, Amerika Serikat
-              </Text>
-
-              <Text style={styles.heading}>Type</Text>
-              <Text style={styles.valueStyle}>Multinational company</Text>
-
-              <Text style={styles.heading}>Since</Text>
-              <Text style={styles.valueStyle}>1998</Text>
-
-              <Text style={styles.heading}>Specialization</Text>
-              <Text style={styles.valueStyle}>Search technology, Web computing, Software and Online advertising</Text>
-            </View>
-          ) : null}
         </View>
       </ScrollView>
       {loading ? <Loader /> : null}
@@ -194,19 +162,34 @@ const SingleJobHeader = ({ goBack, tags }) => {
         />
       </View>
       <Text style={styles.compName}>UI/UX Designer</Text>
-      <View style={{flexDirection:'row', alignItems:'center', alignSelf:'center', marginTop: 16}}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          alignSelf: "center",
+          marginTop: 16,
+        }}
+      >
         <Text style={styles.companyName}>Google</Text>
         <View style={styles.dot}></View>
         <Text style={styles.companyName}>1 day ago</Text>
       </View>
       <View style={styles.numEmpRow}>
-        {tags?.map((item, index) => 
+        {tags?.map((item, index) => (
           <View key={index?.toString()} style={styles.numEmpView}>
             <Text style={styles.numEmpText}>{item?.name}</Text>
           </View>
-          )}
+        ))}
       </View>
-      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width: '80%', alignSelf:'center'}} >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "80%",
+          alignSelf: "center",
+        }}
+      >
         <Text style={styles.lctnTxt}>$180,00/year</Text>
         <Text style={styles.lctnTxt}>Seattle, USA</Text>
       </View>
@@ -279,7 +262,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 16,
     borderRadius: 65,
-    marginRight: 5
+    marginRight: 5,
   },
   numEmpText: {
     color: "white",
@@ -353,13 +336,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "400",
   },
-  companyName:{
-    color:'white',
+  companyName: {
+    color: "white",
     fontSize: 16,
-    fontWeight:'400'
+    fontWeight: "400",
   },
   dot: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     height: 7,
     width: 7,
     borderRadius: 7 / 2,
