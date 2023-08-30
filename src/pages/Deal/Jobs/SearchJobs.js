@@ -15,26 +15,26 @@ import JobsSearch from "./components/JobsSearch";
 import { dimensions } from "../../../utility/Mycolors";
 
 const recentJobList = [
-  {
-    id: "1",
-    icon: require("./assets/images/google-icon.png"),
-    companyName: "Google",
-    jobTitle: "UI Designer",
-    tags: ["Senior", "Full-Time", "Remote"],
-    salary: "$8K",
-    salaryMonth: "/Month",
-    location: "California, USA",
-  },
-  {
-    id: "2",
-    icon: require("./assets/images/google-icon.png"),
-    companyName: "Google",
-    jobTitle: "UI Designer",
-    tags: ["Senior", "Full-Time", "Remote"],
-    salary: "$8K",
-    salaryMonth: "/Month",
-    location: "California, USA",
-  },
+  // {
+  //   id: "1",
+  //   icon: require("./assets/images/google-icon.png"),
+  //   companyName: "Google",
+  //   jobTitle: "UI Designer",
+  //   tags: ["Senior", "Full-Time", "Remote"],
+  //   salary: "$8K",
+  //   salaryMonth: "/Month",
+  //   location: "California, USA",
+  // },
+  // {
+  //   id: "2",
+  //   icon: require("./assets/images/google-icon.png"),
+  //   companyName: "Google",
+  //   jobTitle: "UI Designer",
+  //   tags: ["Senior", "Full-Time", "Remote"],
+  //   salary: "$8K",
+  //   salaryMonth: "/Month",
+  //   location: "California, USA",
+  // },
 ];
 
 const JobsHome = (props) => {
@@ -81,6 +81,16 @@ const JobsHome = (props) => {
     );
   };
 
+  const NoData = () => {
+    return (
+      <View style={styles.noDataContainer} >
+        <Image source={require("./assets/images/jobs-no-data.png")} />
+        <Text style={styles.noDataText}>No results found</Text>
+        <Text style={styles.noDataSubText}>The search could not be found, please check spelling or write another word.</Text>
+      </View>
+    )
+  }
+
   return (
     <SafeAreaView style={styles.safeView}>
       <ScrollView
@@ -96,6 +106,7 @@ const JobsHome = (props) => {
             style={{ marginTop: 10 }}
             keyExtractor={(item) => item.id}
             renderItem={renderRecentJob}
+            ListEmptyComponent={NoData}
           />
         </View>
       </ScrollView>
@@ -120,6 +131,7 @@ const styles = StyleSheet.create({
   mainView: {
     paddingBottom: "30%",
     alignItems: "center",
+    flex: 1,
   },
   mainView2: {
     padding: 20,
@@ -238,5 +250,23 @@ const styles = StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
     marginRight: 10
-  }
+  },
+  noDataContainer:{
+    alignItems:'center',
+    marginTop: dimensions.SCREEN_HEIGHT * 0.13 
+  },
+  noDataText:{
+    color:'#150B3D',
+    fontSize: 16,
+    fontWeight:'700',
+    marginTop: 60
+  },
+  noDataSubText:{
+    color:'#524B6B',
+    fontSize: 12,
+    fontWeight:'400',
+    textAlign:'center',
+    marginTop: 23,
+    width: dimensions.SCREEN_WIDTH * 0.7
+  },
 });
