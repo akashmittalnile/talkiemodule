@@ -21,7 +21,8 @@ const recentJobList = [
     companyName: "Google",
     jobTitle: "UI Designer",
     tags: ["Senior", "Full-Time", "Remote"],
-    salary: "$8K/Month",
+    salary: "$8K",
+    salaryMonth: "/Month",
     location: "California, USA",
   },
   {
@@ -47,10 +48,6 @@ const JobsHome = (props) => {
             <View style={styles.recentIconBg}>
               <Image source={item.icon} />
             </View>
-            <View style={{ marginLeft: 10 }}>
-              <Text style={styles.recentCompN}>{item.companyName}</Text>
-              <Text style={styles.recentLocation}>{item.location}</Text>
-            </View>
           </View>
           <TouchableOpacity>
             <Image source={true ? require("./assets/images/bookmark-2.png") : require("./assets/images/bookmark-2-selected.png")} />
@@ -59,21 +56,26 @@ const JobsHome = (props) => {
 
         <View style={styles.recentMiddle}>
           <Text style={styles.recentBottomT}>{item.jobTitle}</Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{ flexDirection:'row', alignItems:'center' }}>
+            <Text style={styles.recentCompN}>{item.companyName}</Text>
+            <View style={styles.dot}></View>
+            <Text style={styles.recentLocation}>{item.location}</Text>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 22 }}>
             {item.tags?.map((el, index) => (
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <View style={styles.tagView}>
                 <Text style={styles.recentTagT}>{el}</Text>
-                {!(item.tags.length - 1 === index) ? (
-                  <View style={styles.tagDot}></View>
-                ) : null}
               </View>
             ))}
           </View>
         </View>
 
         <View style={styles.recentBottomRow}>
-          <MyButton text="Apply Now" style={{ width: "50%", backgroundColor:'#0089CF', paddingVertical: 11 }} />
-          <Text style={styles.recentBottomT}>{item.salary}<Text style={styles.recentBottomT2}>{item.salaryMonth}</Text></Text>
+          <Text style={styles.timeText}>25 mins ago</Text>
+          <View style={{flexDirection:'row', alignItems:'center'}}>
+            <Text style={styles.recentBottomT3}>{item.salary}</Text>
+            <Text style={styles.recentBottomT2}>{item.salaryMonth}</Text>
+          </View>
         </View>
       </View>
     );
@@ -158,7 +160,7 @@ const styles = StyleSheet.create({
     padding: 14,
     width:'100%',
     // width: dimensions.SCREEN_WIDTH * 0.6,
-    height: 203,
+    // height: 203,
     marginBottom: 15,
     borderRadius: 10,
     backgroundColor: "white",
@@ -177,8 +179,8 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   recentCompN: {
-    color: "#171716",
-    fontSize: 16,
+    color: "#524B6B",
+    fontSize: 12,
     fontWeight: "400",
   },
   recentLocation: {
@@ -187,26 +189,37 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
   recentTagT: {
-    color: "rgba(23, 23, 22, 0.75)",
-    fontSize: 14,
+    color: "#524B6B",
+    fontSize: 10,
     fontWeight: "400",
   },
-  tagDot: {
-    backgroundColor: "#BFD4E4",
-    height: 4,
-    width: 4,
-    borderRadius: 4 / 2,
-    marginHorizontal: 10,
+  dot: {
+    backgroundColor: "#524B6B",
+    height: 2,
+    width: 2,
+    borderRadius: 2 / 2,
+    marginLeft: 7,
+    marginRight: 5,
   },
   recentBottomT: {
     color: "black",
     fontSize: 16,
     fontWeight: "500",
   },
+  timeText: {
+    color: "#AAA6B9",
+    fontSize: 10,
+    fontWeight: "400",
+  },
+  recentBottomT3: {
+    color: "black",
+    fontSize: 14,
+    fontWeight: "700",
+  },
   recentBottomT2: {
-    color: "rgba(23, 23, 22, 0.75)",
+    color: "#AAA6B9",
     fontSize: 12,
-    fontWeight: "500",
+    fontWeight: "700",
   },
   recentMiddle: {
     marginTop: 22,
@@ -217,4 +230,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 21,
   },
+  tagView:{
+    backgroundColor:'rgba(203, 201, 212, 0.2)',
+    borderRadius: 8,
+    paddingVertical:6,
+    paddingHorizontal:24,
+    alignItems:'center',
+    justifyContent:'center',
+    marginRight: 10
+  }
 });
