@@ -8,7 +8,7 @@ import {
   TextInput,
 } from "react-native";
 
-const JobsSearch = ({ value, setValue, style = {} }) => {
+const JobsSearch = ({ value, setValue, onPress, style = {} }) => {
   return (
     <View style={[styles.searchContainer, style]}>
       <View style={styles.searchLeftContainer}>
@@ -23,7 +23,7 @@ const JobsSearch = ({ value, setValue, style = {} }) => {
           style={styles.inputStyle}
         />
       </View>
-      <TouchableOpacity style={styles.filterView} >
+      <TouchableOpacity onPress={onPress} style={styles.filterView} >
         <Image source={require("../assets/images/jobs-filter.png")} />
       </TouchableOpacity>
     </View>

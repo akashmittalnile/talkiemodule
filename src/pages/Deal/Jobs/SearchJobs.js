@@ -12,7 +12,8 @@ import {
 } from "react-native";
 import JobsHeader from "./components/JobsHeader";
 import JobsSearch from "./components/JobsSearch";
-import { dimensions } from "../../../utility/Mycolors";
+import { Mycolors, dimensions } from "../../../utility/Mycolors";
+import Modal from "react-native-modal";
 
 const recentJobList = [
   {
@@ -39,6 +40,7 @@ const recentJobList = [
 
 const JobsHome = (props) => {
   const [searchText, setSearchText] = useState("");
+  const [showFilterModal, setShowFilterModal] = useState(false);
 
   const renderRecentJob = ({ item }) => {
     return (
@@ -50,18 +52,30 @@ const JobsHome = (props) => {
             </View>
           </View>
           <TouchableOpacity>
-            <Image source={true ? require("./assets/images/bookmark-2.png") : require("./assets/images/bookmark-2-selected.png")} />
+            <Image
+              source={
+                true
+                  ? require("./assets/images/bookmark-2.png")
+                  : require("./assets/images/bookmark-2-selected.png")
+              }
+            />
           </TouchableOpacity>
         </View>
 
         <View style={styles.recentMiddle}>
           <Text style={styles.recentBottomT}>{item.jobTitle}</Text>
-          <View style={{ flexDirection:'row', alignItems:'center' }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={styles.recentCompN}>{item.companyName}</Text>
             <View style={styles.dot}></View>
             <Text style={styles.recentLocation}>{item.location}</Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 22 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 22,
+            }}
+          >
             {item.tags?.map((el, index) => (
               <View style={styles.tagView}>
                 <Text style={styles.recentTagT}>{el}</Text>
@@ -72,7 +86,7 @@ const JobsHome = (props) => {
 
         <View style={styles.recentBottomRow}>
           <Text style={styles.timeText}>25 mins ago</Text>
-          <View style={{flexDirection:'row', alignItems:'center'}}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={styles.recentBottomT3}>{item.salary}</Text>
             <Text style={styles.recentBottomT2}>{item.salaryMonth}</Text>
           </View>
@@ -83,13 +97,16 @@ const JobsHome = (props) => {
 
   const NoData = () => {
     return (
-      <View style={styles.noDataContainer} >
+      <View style={styles.noDataContainer}>
         <Image source={require("./assets/images/jobs-no-data.png")} />
         <Text style={styles.noDataText}>No results found</Text>
-        <Text style={styles.noDataSubText}>The search could not be found, please check spelling or write another word.</Text>
+        <Text style={styles.noDataSubText}>
+          The search could not be found, please check spelling or write another
+          word.
+        </Text>
       </View>
-    )
-  }
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safeView}>
@@ -100,7 +117,7 @@ const JobsHome = (props) => {
       >
         <JobsHeader text="Home" />
         <View style={styles.mainView2}>
-          <JobsSearch value={searchText} setValue={setSearchText} />
+          <JobsSearch value={searchText} setValue={setSearchText} onPress={()=>{setShowFilterModal(true)}} />
           <FlatList
             data={recentJobList}
             style={{ marginTop: 10 }}
@@ -110,6 +127,101 @@ const JobsHome = (props) => {
           />
         </View>
       </ScrollView>
+      <Modal
+        isVisible={showFilterModal}
+        swipeDirection="down"
+        onBackdropPress={() => setShowFilterModal(false)}
+        onSwipeComplete={(e) => {
+          setShowFilterModal(false);
+        }}
+        scrollTo={() => {}}
+        scrollOffset={1}
+        propagateSwipe={true}
+        coverScreen={false}
+        backdropColor="transparent"
+        style={{
+          justifyContent: "flex-end",
+          margin: 0,
+          backgroundColor: "rgba(0,0,0,0.5)",
+        }}
+      >
+        <View
+          style={{
+            height: "50%",
+            backgroundColor: "#fff",
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            padding: 20,
+          }}
+        >
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled={true}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 30,
+                marginTop: 10,
+              }}
+            >
+              <View style={{ flex: 1 }} />
+              <Text
+                style={{
+                  flex: 4,
+                  color: Mycolors.Black,
+                  fontWeight: "500",
+                  textAlign: "center",
+                }}
+              >
+                Passions
+              </Text>
+              <TouchableOpacity
+                onPress={() => setShowFilterModal(false)}
+                style={{ flex: 1 }}
+              >
+                <Text
+                  style={{
+                    color: "#FF3B7F",
+                    fontWeight: "500",
+                    textAlign: "center",
+                  }}
+                >
+                  Done
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ width: "95%", alignSelf: "center" }}>
+              <Text style={{ color: "#4a4c52", fontSize: 12 }}>
+                Select passions that you would like to share. Choose a minimum
+                of 3.
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+              >
+                <Text
+                  style={{ color: "#4a4c52", fontSize: 12, fontWeight: "500" }}
+                >
+                  Passions
+                </Text>
+                <Text
+                  style={{ color: "#4a4c52", fontSize: 12, fontWeight: "500" }}
+                >{`${1}/${1}`}</Text>
+              </View>
+            </View>
+
+            {/* <View style={{width:100,height:100}} /> */}
+          </ScrollView>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -170,7 +282,7 @@ const styles = StyleSheet.create({
   },
   recentJobsContainer: {
     padding: 14,
-    width:'100%',
+    width: "100%",
     // width: dimensions.SCREEN_WIDTH * 0.6,
     // height: 203,
     marginBottom: 15,
@@ -242,31 +354,31 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 21,
   },
-  tagView:{
-    backgroundColor:'rgba(203, 201, 212, 0.2)',
+  tagView: {
+    backgroundColor: "rgba(203, 201, 212, 0.2)",
     borderRadius: 8,
-    paddingVertical:6,
-    paddingHorizontal:24,
-    alignItems:'center',
-    justifyContent:'center',
-    marginRight: 10
+    paddingVertical: 6,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
   },
-  noDataContainer:{
-    alignItems:'center',
-    marginTop: dimensions.SCREEN_HEIGHT * 0.13 
+  noDataContainer: {
+    alignItems: "center",
+    marginTop: dimensions.SCREEN_HEIGHT * 0.13,
   },
-  noDataText:{
-    color:'#150B3D',
+  noDataText: {
+    color: "#150B3D",
     fontSize: 16,
-    fontWeight:'700',
-    marginTop: 60
+    fontWeight: "700",
+    marginTop: 60,
   },
-  noDataSubText:{
-    color:'#524B6B',
+  noDataSubText: {
+    color: "#524B6B",
     fontSize: 12,
-    fontWeight:'400',
-    textAlign:'center',
+    fontWeight: "400",
+    textAlign: "center",
     marginTop: 23,
-    width: dimensions.SCREEN_WIDTH * 0.7
+    width: dimensions.SCREEN_WIDTH * 0.7,
   },
 });
