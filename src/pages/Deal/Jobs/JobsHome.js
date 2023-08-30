@@ -61,14 +61,17 @@ const JobsHome = (props) => {
   const [searchText, setSearchText] = useState("");
 
   const gotoSearchJobsScreen = () => {
-    props.navigation.navigate('SearchJobs')
-  }
+    props.navigation.navigate("SearchJobs");
+  };
   const gotoProfile = () => {
-    props.navigation.navigate('Profile')
-  }
+    props.navigation.navigate("Profile");
+  };
   const gotoCompanyProfile = () => {
-    props.navigation.navigate('CompanyProfile')
-  }
+    props.navigation.navigate("CompanyProfile");
+  };
+  const gotoSingleJob = () => {
+    props.navigation.navigate("SingleJob");
+  };
 
   const renderFeaturedJob = ({ item }) => {
     return (
@@ -77,33 +80,35 @@ const JobsHome = (props) => {
         style={styles.featuredJobsContainer}
         resizeMode="stretch"
       >
-        <View style={styles.featuredTopRow}>
-          <View style={styles.featuredTopLeftRow}>
-            <View style={styles.iconBg}>
-              <Image source={item.icon} />
+        <TouchableOpacity onPress={gotoSingleJob} >
+          <View style={styles.featuredTopRow}>
+            <View style={styles.featuredTopLeftRow}>
+              <View style={styles.iconBg}>
+                <Image source={item.icon} />
+              </View>
+              <View style={{ marginLeft: 10 }}>
+                <Text style={styles.jobT}>{item.jobTitle}</Text>
+                <Text style={styles.compN}>{item.companyName}</Text>
+              </View>
             </View>
-            <View style={{ marginLeft: 10 }}>
-              <Text style={styles.jobT}>{item.jobTitle}</Text>
-              <Text style={styles.compN}>{item.companyName}</Text>
-            </View>
+            <TouchableOpacity>
+              <Image source={require("./assets/images/bookmark.png")} />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity>
-            <Image source={require("./assets/images/bookmark.png")} />
-          </TouchableOpacity>
-        </View>
 
-        <View style={styles.featuredMiddleRow}>
-          {item.tags?.map((el) => (
-            <View style={styles.tagView}>
-              <Text style={styles.tagT}>{el}</Text>
-            </View>
-          ))}
-        </View>
+          <View style={styles.featuredMiddleRow}>
+            {item.tags?.map((el) => (
+              <View style={styles.tagView}>
+                <Text style={styles.tagT}>{el}</Text>
+              </View>
+            ))}
+          </View>
 
-        <View style={styles.featuredBottomRow}>
-          <Text style={styles.bottomT}>{item.salary}</Text>
-          <Text style={styles.bottomT}>{item.location}</Text>
-        </View>
+          <View style={styles.featuredBottomRow}>
+            <Text style={styles.bottomT}>{item.salary}</Text>
+            <Text style={styles.bottomT}>{item.location}</Text>
+          </View>
+        </TouchableOpacity>
       </ImageBackground>
     );
   };
@@ -121,7 +126,13 @@ const JobsHome = (props) => {
             </View>
           </View>
           <TouchableOpacity>
-            <Image source={true ? require("./assets/images/bookmark-2.png") : require("./assets/images/bookmark-2-selected.png")} />
+            <Image
+              source={
+                true
+                  ? require("./assets/images/bookmark-2.png")
+                  : require("./assets/images/bookmark-2-selected.png")
+              }
+            />
           </TouchableOpacity>
         </View>
 
@@ -140,7 +151,14 @@ const JobsHome = (props) => {
         </View>
 
         <View style={styles.recentBottomRow}>
-          <MyButton text="Apply Now" style={{ width: "50%", backgroundColor:'#0089CF', paddingVertical: 11 }} />
+          <MyButton
+            text="Apply Now"
+            style={{
+              width: "50%",
+              backgroundColor: "#0089CF",
+              paddingVertical: 11,
+            }}
+          />
           <View style={styles.salaryRow}>
             <Text style={styles.recentBottomT}>{item.salary}</Text>
             <Text style={styles.recentBottomT2}>{item.salaryMonth}</Text>
@@ -158,13 +176,17 @@ const JobsHome = (props) => {
         contentContainerStyle={styles.mainView}
       >
         <JobsHeader text="Home" />
-        <JobsSearch value={searchText} setValue={setSearchText} style={{
-          width: dimensions.SCREEN_WIDTH - 40,
-          alignSelf: 'center',
-          marginTop: -25,
-          zIndex: 999,
-          // elevation: 10
-        }} />
+        <JobsSearch
+          value={searchText}
+          setValue={setSearchText}
+          style={{
+            width: dimensions.SCREEN_WIDTH - 40,
+            alignSelf: "center",
+            marginTop: -25,
+            zIndex: 999,
+            // elevation: 10
+          }}
+        />
         <View style={styles.mainView2}>
           <View style={styles.findOutContainer}>
             <View style={{ width: "50%" }}>
@@ -417,8 +439,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 21,
   },
-  salaryRow:{
+  salaryRow: {
     flexDirection: "row",
     alignItems: "center",
-  }
+  },
 });
