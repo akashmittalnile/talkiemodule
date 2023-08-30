@@ -15,7 +15,7 @@ import JobsHeader from "./components/JobsHeader";
 import JobsSearch from "./components/JobsSearch";
 import { dimensions } from "../../../utility/Mycolors";
 import MyAlert from "../../../component/MyAlert";
-import { requestGetApi, deal_job_profile } from "../../../WebApi/Service";
+import { requestGetApi, deal_job_profile, deal_job_candidate_homepage } from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
 import Loader from "../../../WebApi/Loader";
 import moment from "moment";
@@ -98,19 +98,19 @@ const CompanyProfile = (props) => {
 
   useEffect(() => {
     console.log("userdetaile.token", userdetaile);
-    // getProfileData();
+    getCandidateHomepage();
   }, []);
   // Saurabh Saneja August 14, 2023 get profile data
-  const getProfileData = async () => {
+  const getCandidateHomepage = async () => {
     setLoading(true);
     const { responseJson, err } = await requestGetApi(
-      deal_job_profile + userdetaile.userid,
+      deal_job_candidate_homepage,
       "",
       "GET",
       userdetaile.token
     );
     setLoading(false);
-    console.log("getProfileData responseJson", responseJson);
+    console.log("getCandidateHomepage responseJson", responseJson);
     if (responseJson.success == 1) {
       setProfileData(responseJson.body);
     } else {
