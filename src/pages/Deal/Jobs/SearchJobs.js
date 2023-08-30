@@ -15,26 +15,26 @@ import JobsSearch from "./components/JobsSearch";
 import { dimensions } from "../../../utility/Mycolors";
 
 const recentJobList = [
-  // {
-  //   id: "1",
-  //   icon: require("./assets/images/google-icon.png"),
-  //   companyName: "Google",
-  //   jobTitle: "UI Designer",
-  //   tags: ["Senior", "Full-Time", "Remote"],
-  //   salary: "$8K",
-  //   salaryMonth: "/Month",
-  //   location: "California, USA",
-  // },
-  // {
-  //   id: "2",
-  //   icon: require("./assets/images/google-icon.png"),
-  //   companyName: "Google",
-  //   jobTitle: "UI Designer",
-  //   tags: ["Senior", "Full-Time", "Remote"],
-  //   salary: "$8K",
-  //   salaryMonth: "/Month",
-  //   location: "California, USA",
-  // },
+  {
+    id: "1",
+    icon: require("./assets/images/google-icon.png"),
+    companyName: "Google",
+    jobTitle: "UI Designer",
+    tags: ["Senior", "Full-Time", "Remote"],
+    salary: "$8K",
+    salaryMonth: "/Month",
+    location: "California, USA",
+  },
+  {
+    id: "2",
+    icon: require("./assets/images/google-icon.png"),
+    companyName: "Google",
+    jobTitle: "UI Designer",
+    tags: ["Senior", "Full-Time", "Remote"],
+    salary: "$8K",
+    salaryMonth: "/Month",
+    location: "California, USA",
+  },
 ];
 
 const JobsHome = (props) => {
