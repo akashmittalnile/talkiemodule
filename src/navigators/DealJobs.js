@@ -12,6 +12,7 @@ import AddAppreciaton from '../pages/Deal/Jobs/AddAppreciaton';
 import AddSkills from '../pages/Deal/Jobs/AddSkills';
 import CompanyProfile from '../pages/Deal/Jobs/CompanyProfile';
 import SingleJob from '../pages/Deal/Jobs/SingleJob';
+import AddResume from '../pages/Deal/Jobs/AddResume';
 
 const DealLearning=(props)=>{
    
@@ -31,6 +32,7 @@ const DealLearning=(props)=>{
             <Stack.Screen component = {AddAppreciaton} name="AddAppreciaton" />
             <Stack.Screen component = {AddSkills} name="AddSkills" />
             <Stack.Screen component = {SingleJob} name="SingleJob" />
+            <Stack.Screen component = {AddResume} name="AddResume" />
             
 
         </Stack.Navigator>

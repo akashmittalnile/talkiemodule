@@ -113,6 +113,13 @@ const EditProfile = (props) => {
       props.navigation.navigate("AddWorkExp", { actionType: type, data });
     }
   };
+  const gotoAddResume = (type = "add", data = {}) => {
+    if (type === "add") {
+      props.navigation.navigate("AddResume", { actionType: type });
+    } else {
+      props.navigation.navigate("AddResume", { actionType: type, data });
+    }
+  };
   const gotoAddWorkEducation = (type = "add", data) => {
     if (type === "add") {
       props.navigation.navigate("AddEducation", { actionType: type });
@@ -234,7 +241,10 @@ const EditProfile = (props) => {
                       { marginLeft: 5, marginTop: 7 },
                     ]}
                   >
-                    {moment(item?.end_date).diff(moment(item?.from_date), "years")}{" "}
+                    {moment(item?.end_date).diff(
+                      moment(item?.from_date),
+                      "years"
+                    )}{" "}
                     Years
                   </Text>
                 </View>
@@ -496,7 +506,9 @@ const EditProfile = (props) => {
                 />
                 <Text style={styles.aprctinText}>Resume</Text>
               </View>
-              <Image source={require("./assets/images/jobs-add-icon.png")} />
+              <TouchableOpacity onPress={() => gotoAddResume()}>
+                <Image source={require("./assets/images/jobs-add-icon.png")} />
+              </TouchableOpacity>
             </View>
             <Divider style={{ marginVertical: 20 }} />
             <View style={styles.resumeBottomRow}>
