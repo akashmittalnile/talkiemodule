@@ -33,7 +33,7 @@ import Loader from "../../../WebApi/Loader";
 import DateSelector from "./components/DateSelector";
 import DatePicker from "react-native-date-picker";
 import moment from "moment";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 
 const selectedSkills = [
   {
@@ -131,7 +131,9 @@ const AddSkills = (props) => {
     console.log("getAddedSkills responseJson", responseJson);
     if (responseJson.success == 1) {
       console.log("here");
-      setAddedSkillData(responseJson.data?.map(el => ({...el, isAdded: true})));
+      setAddedSkillData(
+        responseJson.data?.map((el) => ({ ...el, isAdded: true }))
+      );
     } else {
       setalert_sms(err);
       setMy_Alert(true);
@@ -166,24 +168,32 @@ const AddSkills = (props) => {
   };
   const handleUnselectSkill = (id) => {
     const updatedData = allSkillData?.map((el) =>
-      el.id === id ? ({ ...el, isAdded: false }) : el
+      el.id === id ? { ...el, isAdded: false } : el
     );
     setAllSkillData([...updatedData]);
-    setAddedSkillData(addedSkillData?.filter(el => el.id !== id))
+    setAddedSkillData(addedSkillData?.filter((el) => el.id !== id));
     Toast.show({ text1: `Skill unselected successfully` });
   };
   const handleSelectSkill = (id) => {
     const updatedData = allSkillData?.map((el) =>
-      el.id === id ? ({ ...el, isAdded: true }) : el
+      el.id === id ? { ...el, isAdded: true } : el
     );
     setAllSkillData([...updatedData]);
-    const thatId = allSkillData.find(el => el.id == id)
-    thatId.isAdded = true
-    setAddedSkillData([...addedSkillData, thatId])
+    const thatId = allSkillData.find((el) => el.id == id);
+    thatId.isAdded = true;
+    setAddedSkillData([...addedSkillData, thatId]);
     Toast.show({ text1: `Skill selected successfully` });
   };
   const SelectedSkills = () => {
     // const data = addedSkillData?.filter((el) => el?.isAdded);
+    if (addedSkillData?.length === 0) {
+      return (
+        // <Text style={styles.skillText2} >No selected skills found</Text>
+        <Text style={{ color: "red", fontSize: 12 }}>
+          No selected skills found
+        </Text>
+      );
+    }
     return addedSkillData?.map((el) => {
       // console.log('skill el', el);
       return (
@@ -215,16 +225,70 @@ const AddSkills = (props) => {
       );
     });
   };
-  const UnselectedSkills = () => {
+  const FilteredSelectedSkills = () => {
+    // const data = addedSkillData?.filter((el) => el?.isAdded);
+    const matchingSelectedSkills = addedSkillData?.filter((el) =>
+      el?.skill
+        ?.trim()
+        ?.toLowerCase()
+        ?.includes(searchText?.trim()?.toLowerCase())
+    );
+    if (matchingSelectedSkills?.length === 0) {
+      return (
+        // <Text style={styles.skillText2} >No selected skills found</Text>
+        <Text style={{ color: "red", fontSize: 12 }}>
+          No selected skills found
+        </Text>
+      );
+    }
+    return matchingSelectedSkills?.map((el) => {
+      // console.log('skill el', el);
+      return (
+        <View
+          style={[
+            styles.skillTextView,
+            !el?.isAdded ? { backgroundColor: "#D9E6F2" } : null,
+          ]}
+        >
+          <Text
+            style={[
+              styles.skillText2,
+              !el?.isAdded ? { color: "#0D0D26" } : null,
+            ]}
+          >
+            {el.skill}
+          </Text>
+          {el?.isAdded ? (
+            <TouchableOpacity
+              onPress={() => {
+                handleUnselectSkill(el.id);
+              }}
+              style={{ marginLeft: 8 }}
+            >
+              <Image source={require("./assets/images/jobs-cross-icon.png")} />
+            </TouchableOpacity>
+          ) : null}
+        </View>
+      );
+    });
+  };
+  const FilteredUnselectedSkills = () => {
     // Saurabh Saneja 21 August 2023
     // filter data to include unselected skills, then filter for search text
-    const data = getUnselectedSkills()
-      ?.filter((el) =>
-        el?.skill
-          ?.trim()
-          ?.toLowerCase()
-          ?.includes(searchText?.trim()?.toLowerCase())
+    const data = getUnselectedSkills()?.filter((el) =>
+      el?.skill
+        ?.trim()
+        ?.toLowerCase()
+        ?.includes(searchText?.trim()?.toLowerCase())
+    );
+    if (data?.length === 0) {
+      return (
+        // <Text style={styles.skillText2} >No selected skills found</Text>
+        <Text style={{ color: "red", fontSize: 12 }}>
+          No unselected skills found
+        </Text>
       );
+    }
     return data?.map((el) => {
       // console.log('skill el', el);
       return (
@@ -254,11 +318,51 @@ const AddSkills = (props) => {
       );
     });
   };
+  const UnselectedSkills = () => {
+    if (getUnselectedSkills()?.length === 0) {
+      return (
+        // <Text style={styles.skillText2} >No selected skills found</Text>
+        <Text style={{ color: "red", fontSize: 12 }}>
+          No unselected skills found
+        </Text>
+      );
+    }
+    return getUnselectedSkills()?.map((el) => {
+      // console.log('skill el', el);
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            handleSelectSkill(el.id);
+          }}
+          style={[
+            styles.skillTextView,
+            !el?.isAdded ? { backgroundColor: "#D9E6F2" } : null,
+          ]}
+        >
+          <Text
+            style={[
+              styles.skillText2,
+              !el?.isAdded ? { color: "#0D0D26" } : null,
+            ]}
+          >
+            {el.skill}
+          </Text>
+          {el?.isAdded ? (
+            <View style={{ marginLeft: 8 }}>
+              <Image source={require("./assets/images/jobs-cross-icon.png")} />
+            </View>
+          ) : null}
+        </TouchableOpacity>
+      );
+    });
+  };
   const getUnselectedSkills = () => {
-    const data = allSkillData?.filter(el => !addedSkillData?.find(jl => jl.id === el.id))
-    console.log('getUnselectedSkills', data);
-    return data
-  }
+    const data = allSkillData?.filter(
+      (el) => !addedSkillData?.find((jl) => jl.id === el.id)
+    );
+    console.log("getUnselectedSkills", data);
+    return data;
+  };
   return (
     <SafeAreaView style={styles.safeView}>
       <ScrollView
@@ -271,23 +375,25 @@ const AddSkills = (props) => {
           <Text style={styles.title}>Add Skills</Text>
 
           <Search value={searchText} setValue={setSearchText} />
-          <View style={styles.skillTextContainer}>
+          <View>
             {searchText?.length === 0 ? (
-              addedSkillData?.filter((el) => el?.isAdded)?.length > 0 ? (
-                <SelectedSkills />
-              ) : (
-                <Text>No selected skills found</Text>
-              )
-            ) : getUnselectedSkills()
-                ?.filter((el) =>
-                  el?.skill
-                    ?.trim()
-                    ?.toLowerCase()
-                    ?.includes(searchText?.trim()?.toLowerCase())
-                )?.length > 0 ? (
-              <UnselectedSkills />
+              <View>
+                <View style={styles.skillTextContainer}>
+                  <SelectedSkills />
+                </View>
+                <View style={styles.skillTextContainer}>
+                  <UnselectedSkills />
+                </View>
+              </View>
             ) : (
-              <Text>No unselected skills match search text</Text>
+              <View>
+                <View style={styles.skillTextContainer}>
+                  <FilteredSelectedSkills />
+                </View>
+                <View style={styles.skillTextContainer}>
+                  <FilteredUnselectedSkills />
+                </View>
+              </View>
             )}
           </View>
           <MyButton
