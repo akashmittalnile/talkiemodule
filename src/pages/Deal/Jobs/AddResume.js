@@ -17,15 +17,46 @@ import { requestGetApi, requestPostApi } from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
 import Loader from "../../../WebApi/Loader";
 import Toast from "react-native-toast-message";
+import DocumentPicker from "react-native-document-picker";
 
 const AddResume = (props) => {
   const userdetaile = useSelector((state) => state.user.user_details);
   const [loading, setLoading] = useState(false);
   const [My_Alert, setMy_Alert] = useState(false);
   const [alert_sms, setalert_sms] = useState("");
+  const [resumePdf, setResumePdf] = useState({});
 
   useEffect(() => {}, []);
 
+  const openDocument = async (setValue) => {
+    try {
+      const resp = await DocumentPicker.pickSingle({
+        // type: [DocumentPicker.types.allFiles]
+        type: [DocumentPicker.types.pdf],
+      });
+      setValue(resp);
+    } catch (error) {
+      console.log("error in openDocument", error);
+    }
+  };
+  const validation = () => {
+    if (Object.keys(resumePdf)?.length === 0) {
+      // Alert.alert('', 'Please upload certification 1');
+      Toast.show("Please upload certification 1", Toast.SHORT);
+    }
+    return true;
+  };
+  const apifunction = () => {
+    const imageName1 = resumePdf.uri.slice(
+      resumePdf.uri.lastIndexOf("/"),
+      resumePdf.uri.length
+    );
+    DocumentData.append("file", {
+      name: imageName1,
+      type: resumePdf.type,
+      uri: resumePdf.uri,
+    });
+  };
   return (
     <SafeAreaView style={styles.safeView}>
       <ScrollView
@@ -39,12 +70,38 @@ const AddResume = (props) => {
           <Text style={styles.subtitle}>
             Add your CV/Resume to apply for a job
           </Text>
-          <TouchableOpacity style={styles.uplaodView}>
-            <Image
-              source={require("./assets/images/jobs-upload-cv-Icon.png")}
-            />
-            <Text style={styles.uploadText}>Upload CV/Resume</Text>
-          </TouchableOpacity>
+          {Object.keys(resumePdf)?.length === 0 ? (
+            <TouchableOpacity
+              onPress={() => openDocument(setResumePdf)}
+              style={styles.uplaodView}
+            >
+              <Image
+                source={require("./assets/images/jobs-upload-cv-Icon.png")}
+              />
+              <Text style={styles.uploadText}>Upload CV/Resume</Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.uploadedView}>
+            <View style={styles.uploadedViewTopRow}>
+              <Image
+                source={require("./assets/images/jobs-pdf-icon.png")}
+                style={{ height: 44, width: 44 }}
+              />
+              <View>
+                <Text style={styles.uploadText}>
+                  {resumePdf.uri.slice(
+                    resumePdf.uri.lastIndexOf("/"),
+                    resumePdf.uri.length
+                  )}.pdf
+                </Text>
+                <View style={styles.uploadedViewMiddleRow}>
+                  <Text style={styles.fileInfoText}>867 kb</Text>    
+                  <Text style={styles.fileInfoText}>14 Feb 2022 at 11:30 am</Text>    
+                </View>
+              </View>
+            </View>
+            </View>
+          )}
           <MyButton
             text="SAVE"
             onPress={() => {}}
@@ -130,11 +187,34 @@ const styles = StyleSheet.create({
     borderColor: "#455A64",
     borderStyle: "dotted",
   },
+  uploadedView: {
+    backgroundColor: "rgba(63, 19, 228, 0.05)",
+    paddingVertical: 15,
+    paddingHorizontal: 20.5,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: "#455A64",
+    borderStyle: "dotted",
+  },
+  uploadedViewTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  uploadedViewMiddleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   uploadText: {
     color: "#150B3D",
     fontSize: 12,
     fontWeight: "400",
-    marginLeft: 15
+    marginLeft: 15,
+  },
+  fileInfoText: {
+    color: "#AAA6B9",
+    fontSize: 12,
+    fontWeight: "400",
+    marginLeft: 15,
   },
   button: {
     backgroundColor: "#FFC40C",
