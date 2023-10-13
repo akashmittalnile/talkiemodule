@@ -13,7 +13,7 @@ import {
 import JobsHeader from "./components/JobsHeader";
 import { dimensions } from "../../../utility/Mycolors";
 import MyAlert from "../../../component/MyAlert";
-import { requestGetApi, requestPostApi } from "../../../WebApi/Service";
+import { deal_job_resume, requestGetApi, requestPostApi } from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
 import Loader from "../../../WebApi/Loader";
 import Toast from "react-native-toast-message";
@@ -25,6 +25,7 @@ const AddResume = (props) => {
   const [My_Alert, setMy_Alert] = useState(false);
   const [alert_sms, setalert_sms] = useState("");
   const [resumePdf, setResumePdf] = useState({});
+  const [info, setInfo] = useState("");
 
   useEffect(() => {}, []);
 
@@ -35,27 +36,61 @@ const AddResume = (props) => {
         type: [DocumentPicker.types.pdf],
       });
       setValue(resp);
+      console.log("setValue", resp);
     } catch (error) {
       console.log("error in openDocument", error);
     }
   };
   const validation = () => {
     if (Object.keys(resumePdf)?.length === 0) {
-      // Alert.alert('', 'Please upload certification 1');
-      Toast.show("Please upload certification 1", Toast.SHORT);
-    }
+      Toast.show({ text1: "Please Upload CV" });
+      return false;
+    } 
+    // else if (info?.trim()?.length === 0) {
+    //   Toast.show({ text1: "Please enter Information" });
+    //   return false;
+    // }
     return true;
   };
   const apifunction = () => {
-    const imageName1 = resumePdf.uri.slice(
-      resumePdf.uri.lastIndexOf("/"),
-      resumePdf.uri.length
-    );
     DocumentData.append("file", {
-      name: imageName1,
+      name: resumePdf.name,
       type: resumePdf.type,
       uri: resumePdf.uri,
     });
+  };
+  const handleAdd = async () => {
+    if (!validation()) {
+      return;
+    }
+    setLoading(true);
+    const postData = new FormData();
+    postData.append("file", {
+      name: resumePdf.name,
+      type: resumePdf.type,
+      uri: resumePdf.uri,
+    });
+    console.log("handleAdd postData", JSON.stringify(postData));
+    const { responseJson, err } = await requestPostApi(
+      deal_job_resume,
+      postData,
+      "POST",
+      userdetaile.token
+    );
+    setLoading(false);
+    console.log("handleAdd responseJson", responseJson);
+    if (responseJson.success == 1) {
+      Toast.show({ text1: responseJson.message });
+      props.navigation.goBack();
+    } else {
+      Toast.show({ text1: responseJson.message });
+      setalert_sms(err);
+      setMy_Alert(true);
+    }
+  };
+  const deleteFile = () => {
+    setResumePdf({});
+    Toast.show({ text1: "File deleted sucesssfuly" });
   };
   return (
     <SafeAreaView style={styles.safeView}>
@@ -82,29 +117,48 @@ const AddResume = (props) => {
             </TouchableOpacity>
           ) : (
             <View style={styles.uploadedView}>
-            <View style={styles.uploadedViewTopRow}>
-              <Image
-                source={require("./assets/images/jobs-pdf-icon.png")}
-                style={{ height: 44, width: 44 }}
-              />
-              <View>
-                <Text style={styles.uploadText}>
-                  {resumePdf.uri.slice(
-                    resumePdf.uri.lastIndexOf("/"),
-                    resumePdf.uri.length
-                  )}.pdf
-                </Text>
-                <View style={styles.uploadedViewMiddleRow}>
-                  <Text style={styles.fileInfoText}>867 kb</Text>    
-                  <Text style={styles.fileInfoText}>14 Feb 2022 at 11:30 am</Text>    
+              <View style={styles.uploadedViewTopRow}>
+                <Image
+                  source={require("./assets/images/jobs-pdf-icon.png")}
+                  style={{ height: 44, width: 44 }}
+                />
+                <View>
+                  <Text style={[styles.uploadText, { width: "70%" }]}>
+                    {resumePdf.name}
+                  </Text>
+                  <View style={styles.uploadedViewMiddleRow}>
+                    <Text style={styles.fileInfoText}>867 kb</Text>
+                    <Text style={[styles.fileInfoText, { marginTop: 5 }]}>
+                      14 Feb 2022 at 11:30 am
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
+              <TouchableOpacity
+                onPress={deleteFile}
+                style={styles.uploadedViewBottomRow}
+              >
+                <Image
+                  source={require("./assets/images/jobs-delete-icon.png")}
+                />
+                <Text style={styles.removeFileText}>Remove File</Text>
+              </TouchableOpacity>
             </View>
           )}
+          <Text style={[styles.title, { marginTop: 36, marginBottom: 15 }]}>
+            Information
+          </Text>
+          <TextInput
+            placeholder={"Explain why you are the right person for this job"}
+            placeholderTextColor="#AAA6B9"
+            multiline
+            value={info}
+            onChangeText={(e) => setInfo(e)}
+            style={styles.input}
+          />
           <MyButton
             text="SAVE"
-            onPress={() => {}}
+            onPress={handleAdd}
             style={{
               backgroundColor: "#0089CF",
               paddingVertical: 20,
@@ -188,6 +242,7 @@ const styles = StyleSheet.create({
     borderStyle: "dotted",
   },
   uploadedView: {
+    marginTop: 24,
     backgroundColor: "rgba(63, 19, 228, 0.05)",
     paddingVertical: 15,
     paddingHorizontal: 20.5,
@@ -204,11 +259,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  uploadedViewBottomRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+  },
   uploadText: {
     color: "#150B3D",
     fontSize: 12,
     fontWeight: "400",
     marginLeft: 15,
+  },
+  removeFileText: {
+    color: "#FC4646",
+    fontSize: 12,
+    fontWeight: "400",
+    marginLeft: 10,
   },
   fileInfoText: {
     color: "#AAA6B9",
@@ -276,5 +342,16 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 14,
     fontWeight: "400",
+  },
+  input: {
+    color: "#150B3D",
+    fontSize: 12,
+    fontWeight: "400",
+    backgroundColor: "white",
+    borderRadius: 5,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    height: 232,
+    marginBottom: 20,
   },
 });
