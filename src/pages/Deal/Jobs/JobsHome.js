@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,10 @@ import {
 import JobsHeader from "./components/JobsHeader";
 import JobsSearch from "./components/JobsSearch";
 import { dimensions } from "../../../utility/Mycolors";
+import { deal_job_candidate_homepage, requestGetApi } from "../../../WebApi/Service";
+import { useSelector } from "react-redux";
+import Loader from "../../../WebApi/Loader";
+import MyAlert from "../../../component/MyAlert";
 
 const featuredJobsData = [
   {
@@ -58,8 +62,32 @@ const recentJobList = [
 ];
 
 const JobsHome = (props) => {
+  const userdetaile = useSelector((state) => state.user.user_details);
   const [searchText, setSearchText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [My_Alert, setMy_Alert] = useState(false);
+  const [alert_sms, setalert_sms] = useState("");
 
+  useEffect(() => {
+    getCandidateHomepage();
+  }, []);
+  const getCandidateHomepage = async () => {
+    setLoading(true);
+    const { responseJson, err } = await requestGetApi(
+      deal_job_candidate_homepage,
+      "",
+      "GET",
+      userdetaile.token
+    );
+    setLoading(false);
+    console.log("getCandidateHomepage responseJson", JSON.stringify(responseJson));
+    if (responseJson.success == 1) {
+      setProfileData(responseJson.body);
+    } else {
+      setalert_sms(err);
+      setMy_Alert(true);
+    }
+  };
   const gotoSearchJobsScreen = () => {
     props.navigation.navigate("SearchJobs");
   };
@@ -80,7 +108,7 @@ const JobsHome = (props) => {
         style={styles.featuredJobsContainer}
         resizeMode="stretch"
       >
-        <TouchableOpacity onPress={gotoSingleJob} >
+        <TouchableOpacity onPress={gotoSingleJob}>
           <View style={styles.featuredTopRow}>
             <View style={styles.featuredTopLeftRow}>
               <View style={styles.iconBg}>
@@ -221,6 +249,15 @@ const JobsHome = (props) => {
           />
         </View>
       </ScrollView>
+      {loading ? <Loader /> : null}
+      {My_Alert ? (
+        <MyAlert
+          sms={alert_sms}
+          okPress={() => {
+            setMy_Alert(false);
+          }}
+        />
+      ) : null}
     </SafeAreaView>
   );
 };
