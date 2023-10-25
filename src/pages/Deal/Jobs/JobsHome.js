@@ -104,7 +104,6 @@ const JobsHome = (props) => {
   };
 
   const getCompanyLocation = (location_details) => {
-    console.log('location_details', location_details);
     if(location_details?.length === 0){
       return ''
     }
@@ -205,9 +204,9 @@ const JobsHome = (props) => {
             }}
           />
           <View style={styles.salaryRow}>
-            <Text style={styles.recentBottomT}>{item.salary}</Text>
+            <Text style={styles.recentBottomT}>{'$' + item.salary}</Text>
             {/* <Text style={styles.recentBottomT2}>{item.salaryMonth}</Text> */}
-            <Text style={styles.recentBottomT2}>{'Month'}</Text>
+            <Text style={styles.recentBottomT2}>{'/Month'}</Text>
           </View>
         </View>
       </View>
