@@ -105,6 +105,7 @@ export const deal_job_update_education = `deal/job/demand/update-education/`
 export const deal_job_added_skills = `deal/job/demand/added-skills/`
 export const deal_job_candidate_homepage = `deal/job/demand/candidate-homepage`
 export const deal_job_resume = `deal/job/demand/resume`
+export const deal_job_get_jobs = `deal/job/demand/get-jobs`
 
 
 export const creation_categories = `/creation/common/categories`

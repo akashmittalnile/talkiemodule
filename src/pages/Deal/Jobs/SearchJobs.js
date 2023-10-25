@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,10 @@ import JobsHeader from "./components/JobsHeader";
 import JobsSearch from "./components/JobsSearch";
 import { Mycolors, dimensions } from "../../../utility/Mycolors";
 import Modal from "react-native-modal";
+import { deal_job_get_jobs, requestGetApi } from "../../../WebApi/Service";
+import { useSelector } from "react-redux";
+import Loader from "../../../WebApi/Loader";
+import MyAlert from "../../../component/MyAlert";
 
 const recentJobList = [
   {
@@ -39,8 +43,47 @@ const recentJobList = [
 ];
 
 const JobsHome = (props) => {
+  const userdetaile = useSelector((state) => state.user.user_details);
   const [searchText, setSearchText] = useState("");
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [My_Alert, setMy_Alert] = useState(false);
+  const [alert_sms, setalert_sms] = useState("");
+  const [jobData, setJobData] = useState([]);
+
+  useEffect(() => {
+    getAllJobs();
+  }, []);
+  const getAllJobs = async () => {
+    setLoading(true);
+    const { responseJson, err } = await requestGetApi(
+      deal_job_get_jobs,
+      "",
+      "GET",
+      userdetaile.token
+    );
+    setLoading(false);
+    console.log("getAllJobs responseJson", JSON.stringify(responseJson));
+    if (responseJson.success == 1) {
+      setJobData(responseJson.data);
+    } else {
+      setalert_sms(err);
+      setMy_Alert(true);
+    }
+  };
+  const getCompanyLocation = (location_details) => {
+    if(location_details?.length === 0){
+      return ''
+    }
+    const location = location_details?.find(el => el?.is_default == '1')
+    return location?.address_line1 + ' ' + location?.address_line2
+  }
+  const getTags = (item) => {
+    const tags = [] 
+    const jobType = item?.job_type === null ? 'full time' : item?.job_type
+    tags.push(jobType)
+    return tags 
+  }
 
   const renderRecentJob = ({ item }) => {
     return (
@@ -48,7 +91,7 @@ const JobsHome = (props) => {
         <View style={styles.featuredTopRow}>
           <View style={styles.featuredTopLeftRow}>
             <View style={styles.recentIconBg}>
-              <Image source={item.icon} />
+              <Image source={item?.icon} />
             </View>
           </View>
           <TouchableOpacity>
@@ -63,11 +106,11 @@ const JobsHome = (props) => {
         </View>
 
         <View style={styles.recentMiddle}>
-          <Text style={styles.recentBottomT}>{item.jobTitle}</Text>
+          <Text style={styles.recentBottomT}>{item.job_title}</Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={styles.recentCompN}>{item.companyName}</Text>
+            <Text style={styles.recentCompN}>{'companyName'}</Text>
             <View style={styles.dot}></View>
-            <Text style={styles.recentLocation}>{item.location}</Text>
+            <Text style={styles.recentLocation}>{getCompanyLocation(item.location_details)}</Text>
           </View>
           <View
             style={{
@@ -76,7 +119,7 @@ const JobsHome = (props) => {
               marginTop: 22,
             }}
           >
-            {item.tags?.map((el, index) => (
+            {getTags(item)?.map((el, index) => (
               <View style={styles.tagView}>
                 <Text style={styles.recentTagT}>{el}</Text>
               </View>
@@ -87,8 +130,8 @@ const JobsHome = (props) => {
         <View style={styles.recentBottomRow}>
           <Text style={styles.timeText}>25 mins ago</Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={styles.recentBottomT3}>{item.salary}</Text>
-            <Text style={styles.recentBottomT2}>{item.salaryMonth}</Text>
+            <Text style={styles.recentBottomT3}>{'$' + item.salary}</Text>
+            <Text style={styles.recentBottomT2}>{'/Month'}</Text>
           </View>
         </View>
       </View>
@@ -119,7 +162,7 @@ const JobsHome = (props) => {
         <View style={styles.mainView2}>
           <JobsSearch value={searchText} setValue={setSearchText} onPress={()=>{setShowFilterModal(true)}} />
           <FlatList
-            data={recentJobList}
+            data={jobData}
             style={{ marginTop: 10 }}
             keyExtractor={(item) => item.id}
             renderItem={renderRecentJob}
@@ -222,6 +265,15 @@ const JobsHome = (props) => {
           </ScrollView>
         </View>
       </Modal>
+      {loading ? <Loader /> : null}
+      {My_Alert ? (
+        <MyAlert
+          sms={alert_sms}
+          okPress={() => {
+            setMy_Alert(false);
+          }}
+        />
+      ) : null}
     </SafeAreaView>
   );
 };
