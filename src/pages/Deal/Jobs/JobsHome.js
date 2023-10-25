@@ -67,6 +67,7 @@ const JobsHome = (props) => {
   const [loading, setLoading] = useState(false);
   const [My_Alert, setMy_Alert] = useState(false);
   const [alert_sms, setalert_sms] = useState("");
+  const [profileData, setProfileData] = useState({});
 
   useEffect(() => {
     getCandidateHomepage();
@@ -81,8 +82,9 @@ const JobsHome = (props) => {
     );
     setLoading(false);
     console.log("getCandidateHomepage responseJson", JSON.stringify(responseJson));
-    if (responseJson.success == 1) {
-      setProfileData(responseJson.body);
+    if (responseJson.success) {
+      console.log('here');
+      setProfileData(responseJson.success);
     } else {
       setalert_sms(err);
       setMy_Alert(true);
@@ -100,6 +102,21 @@ const JobsHome = (props) => {
   const gotoSingleJob = () => {
     props.navigation.navigate("SingleJob");
   };
+
+  const getCompanyLocation = (location_details) => {
+    console.log('location_details', location_details);
+    if(location_details?.length === 0){
+      return ''
+    }
+    const location = location_details?.find(el => el?.is_default == '1')
+    return location?.address_line1 + ' ' + location?.address_line2
+  }
+  const getTags = (item) => {
+    const tags = [] 
+    const jobType = item?.job_type === null ? 'full time' : item?.job_type
+    tags.push(jobType)
+    return tags 
+  }
 
   const renderFeaturedJob = ({ item }) => {
     return (
@@ -146,11 +163,11 @@ const JobsHome = (props) => {
         <View style={styles.featuredTopRow}>
           <View style={styles.featuredTopLeftRow}>
             <View style={styles.recentIconBg}>
-              <Image source={item.icon} />
+              <Image source={item?.icon} />
             </View>
             <View style={{ marginLeft: 10 }}>
-              <Text style={styles.recentCompN}>{item.companyName}</Text>
-              <Text style={styles.recentLocation}>{item.location}</Text>
+              <Text style={styles.recentCompN}>{'companyName'}</Text>
+              <Text style={styles.recentLocation}>{getCompanyLocation(item.location_details)}</Text>
             </View>
           </View>
           <TouchableOpacity>
@@ -165,12 +182,12 @@ const JobsHome = (props) => {
         </View>
 
         <View style={styles.recentMiddle}>
-          <Text style={styles.recentBottomT}>{item.jobTitle}</Text>
+          <Text style={styles.recentBottomT}>{item.job_title}</Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {item.tags?.map((el, index) => (
+            {getTags(item)?.map((el, index) => (
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={styles.recentTagT}>{el}</Text>
-                {!(item.tags.length - 1 === index) ? (
+                {!(getTags(item).length - 1 === index) ? (
                   <View style={styles.tagDot}></View>
                 ) : null}
               </View>
@@ -189,7 +206,8 @@ const JobsHome = (props) => {
           />
           <View style={styles.salaryRow}>
             <Text style={styles.recentBottomT}>{item.salary}</Text>
-            <Text style={styles.recentBottomT2}>{item.salaryMonth}</Text>
+            {/* <Text style={styles.recentBottomT2}>{item.salaryMonth}</Text> */}
+            <Text style={styles.recentBottomT2}>{'Month'}</Text>
           </View>
         </View>
       </View>
@@ -240,11 +258,11 @@ const JobsHome = (props) => {
           />
           <ViewMore text="Recent Job List" onPress={gotoSearchJobsScreen} />
           <FlatList
-            data={recentJobList}
+            data={profileData?.allJobs || []}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             style={{ marginTop: 10 }}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(_, index) => index?.toString()}
             renderItem={renderRecentJob}
           />
         </View>
