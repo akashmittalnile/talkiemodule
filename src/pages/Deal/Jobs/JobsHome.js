@@ -99,8 +99,8 @@ const JobsHome = (props) => {
   const gotoCompanyProfile = () => {
     props.navigation.navigate("CompanyProfile");
   };
-  const gotoSingleJob = () => {
-    props.navigation.navigate("SingleJob");
+  const gotoSingleJob = (id = '') => {
+    props.navigation.navigate("SingleJob", {id});
   };
 
   const getCompanyLocation = (location_details) => {
@@ -158,7 +158,7 @@ const JobsHome = (props) => {
   };
   const renderRecentJob = ({ item }) => {
     return (
-      <View style={styles.recentJobsContainer}>
+      <TouchableOpacity onPress={() => gotoSingleJob(item?.id)} style={styles.recentJobsContainer}>
         <View style={styles.featuredTopRow}>
           <View style={styles.featuredTopLeftRow}>
             <View style={styles.recentIconBg}>
@@ -209,7 +209,7 @@ const JobsHome = (props) => {
             <Text style={styles.recentBottomT2}>{'/Month'}</Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 

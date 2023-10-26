@@ -17,8 +17,7 @@ import { dimensions } from "../../../utility/Mycolors";
 import MyAlert from "../../../component/MyAlert";
 import {
   requestGetApi,
-  deal_job_profile,
-  deal_job_candidate_homepage,
+  deal_job_get_job_details,
 } from "../../../WebApi/Service";
 import { useSelector } from "react-redux";
 import Loader from "../../../WebApi/Loader";
@@ -31,7 +30,7 @@ const SingleJob = (props) => {
   const [loading, setLoading] = useState(false);
   const [My_Alert, setMy_Alert] = useState(false);
   const [alert_sms, setalert_sms] = useState("");
-  const [profileData, setProfileData] = useState({});
+  const [jobDetails, setJobDetails] = useState({});
   const [tags, setTags] = useState([
     {
       id: "1",
@@ -60,21 +59,24 @@ const SingleJob = (props) => {
 
   useEffect(() => {
     console.log("userdetaile.token", userdetaile);
-    // getCandidateHomepage();
+    console.log('props', props?.route?.params?.id);
+    getJobData();
   }, []);
   // Saurabh Saneja August 14, 2023 get profile data
-  const getCandidateHomepage = async () => {
+  const getJobData = async () => {
     setLoading(true);
     const { responseJson, err } = await requestGetApi(
-      deal_job_candidate_homepage,
+      deal_job_get_job_details + props?.route?.params?.id,
       "",
       "GET",
       userdetaile.token
     );
     setLoading(false);
-    console.log("getCandidateHomepage responseJson", responseJson);
+    console.log("getJobData responseJson", responseJson);
+    if(responseJson?.job && typeof responseJson?.job === 'object'){
+      setJobDetails(responseJson.job);
+    }
     if (responseJson.success == 1) {
-      setProfileData(responseJson.body);
     } else {
       setalert_sms(err);
       setMy_Alert(true);
@@ -86,6 +88,65 @@ const SingleJob = (props) => {
     }
     setSelectedTab(id);
   };
+  const getCompanyLocation = (location_details) => {
+    if(location_details?.length === 0){
+      return ''
+    }
+    const location = location_details?.find(el => el?.is_default == '1')
+    return location?.address_line1 + ' ' + location?.address_line2
+  }
+  const SingleJobHeader = ({ goBack, tags, data = {} }) => {
+    return (
+      <View style={styles.hdrContainer}>
+        <View style={styles.hdrTopRow}>
+          <TouchableOpacity onPress={goBack}>
+            <Image source={require("./assets/images/arrow-left.png")} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={goBack}>
+            <Image source={require("./assets/images/bookmark-white.png")} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.iconBg}>
+          <Image
+            source={{uri: data?.company_cover_photo}}
+            style={{ width: 54.6, height: 54.6 }}
+          />
+        </View>
+        <Text style={styles.compName}>UI/UX Designer</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            alignSelf: "center",
+            marginTop: 16,
+          }}
+        >
+          <Text style={styles.companyName}>{data?.company_name}</Text>
+          <View style={styles.dot}></View>
+          <Text style={styles.companyName}>{getDiff(data?.created_date)}</Text>
+        </View>
+        <View style={styles.numEmpRow}>
+          {tags?.map((item, index) => (
+            <View key={index?.toString()} style={styles.numEmpView}>
+              <Text style={styles.numEmpText}>{item?.name}</Text>
+            </View>
+          ))}
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "80%",
+            alignSelf: "center",
+          }}
+        >
+          <Text style={styles.lctnTxt}>${data?.salary}/year</Text>
+          <Text style={styles.lctnTxt}>{getCompanyLocation(data?.location_details)}</Text>
+        </View>
+      </View>
+    );
+  };
   return (
     <SafeAreaView style={styles.safeView}>
       <ScrollView
@@ -93,35 +154,32 @@ const SingleJob = (props) => {
         style={{ width: "100%" }}
         contentContainerStyle={styles.mainView}
       >
-        <SingleJobHeader tags={tags} />
+        <SingleJobHeader data={jobDetails} tags={tags} goBack={() => props.navigation.goBack()} />
         <View style={styles.container}>
           <View>
             <Text style={[styles.heading, { marginTop: 26, marginBottom: 23 }]}>
               About Company
             </Text>
             <Text style={styles.valueStyle}>
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-              accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
-              quae ab illo inventore veritatis et quasi architecto beatae vitae
-              dicta sunt explicabo.
+              {jobDetails?.company_about}
             </Text>
 
             <Text style={styles.heading}>Industry</Text>
             <Text style={styles.valueStyle}>Internet product</Text>
 
             <Text style={styles.heading}>Employee size</Text>
-            <Text style={styles.valueStyle}>132,121 Employees</Text>
+            <Text style={styles.valueStyle}>{jobDetails?.employee_count === null ? '' : jobDetails?.employee_count} Employees</Text>
 
             <Text style={styles.heading}>Head office</Text>
             <Text style={styles.valueStyle}>
-              Mountain View, California, Amerika Serikat
+              {jobDetails?.company_address}
             </Text>
 
             <Text style={styles.heading}>Type</Text>
             <Text style={styles.valueStyle}>Multinational company</Text>
 
             <Text style={styles.heading}>Since</Text>
-            <Text style={styles.valueStyle}>1998</Text>
+            <Text style={styles.valueStyle}>{jobDetails?.company_started === null ? '' : jobDetails?.company_started}</Text>
 
             <Text style={styles.heading}>Specialization</Text>
             <Text style={styles.valueStyle}>
@@ -143,59 +201,45 @@ const SingleJob = (props) => {
   );
 };
 export default SingleJob;
-
-const SingleJobHeader = ({ goBack, tags }) => {
-  return (
-    <View style={styles.hdrContainer}>
-      <View style={styles.hdrTopRow}>
-        <TouchableOpacity onPress={goBack}>
-          <Image source={require("./assets/images/arrow-left.png")} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={goBack}>
-          <Image source={require("./assets/images/bookmark-white.png")} />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.iconBg}>
-        <Image
-          source={require("./assets/images/google-icon.png")}
-          style={{ width: 54.6, height: 54.6 }}
-        />
-      </View>
-      <Text style={styles.compName}>UI/UX Designer</Text>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          alignSelf: "center",
-          marginTop: 16,
-        }}
-      >
-        <Text style={styles.companyName}>Google</Text>
-        <View style={styles.dot}></View>
-        <Text style={styles.companyName}>1 day ago</Text>
-      </View>
-      <View style={styles.numEmpRow}>
-        {tags?.map((item, index) => (
-          <View key={index?.toString()} style={styles.numEmpView}>
-            <Text style={styles.numEmpText}>{item?.name}</Text>
-          </View>
-        ))}
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "80%",
-          alignSelf: "center",
-        }}
-      >
-        <Text style={styles.lctnTxt}>$180,00/year</Text>
-        <Text style={styles.lctnTxt}>Seattle, USA</Text>
-      </View>
-    </View>
-  );
-};
+const getDiff = (created_date) => {
+  let diff = null
+  const diffYears = moment().diff(created_date, 'years')
+  if (diffYears > 0) {
+    if(diffYears > 1){
+      diff = diffYears + ' yrs ago'
+    }else{
+      diff = diffYears + ' yr ago'
+    }
+    return diff
+  }
+  const diffMonths = moment().diff(created_date, 'months')
+  if (diffMonths > 0) {
+    if(diffMonths > 1){
+      diff = diffMonths + ' months ago'
+    }else{
+      diff = diffMonths + ' month ago'
+    }
+    return diff
+  }
+  const diffdays = moment().diff(created_date, 'days')
+  if (diffdays > 0) {
+    if(diffdays > 1){
+      diff = diffdays + ' days ago'
+    }else{
+      diff = diffdays + ' day ago'
+    }
+    return diff
+  }
+  const diffHours = moment().diff(created_date, 'hours')
+  const diffMinutes = moment().diff(created_date, 'minutes')
+  const diffOnlyMinutes = diffMinutes % 60
+  if (diffHours > 0) {
+    let hr = diffHours > 1 ? ' hrs ' : ' hr '
+    let min = diffOnlyMinutes > 1 ? ' mins' : ' min'
+    diff = diffHours + hr + diffOnlyMinutes + min +' ago'
+    return diff
+  }
+}
 
 const IconButton = ({ icon, text, onPress, style = {} }) => {
   return (
